@@ -1,0 +1,8 @@
+{
+  "name": " شطبها | Shattabha",
+  "description": "منصة رقمية وسيطة لربط العملاء بشركات المقاولات والتشطيبات المعتمدة تحت إشراف الإدارة بنظام المناقصات المغلقة.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

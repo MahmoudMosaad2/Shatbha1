@@ -1,0 +1,205 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap');
+@import "tailwindcss";
+
+:root {
+  --primary-color: #2B4D89;         /* Classic Deep Navy */
+  --secondary-color: #30445E;       /* Classic Steel-Navy */
+  --dark-color: #0F172A;            /* Slate 900 for modern high contrast */
+  --accent-color: #D8B448;          /* Classic Sandy Gold */
+  --white-color: #F8FAFC;           /* High-comfort light background */
+}
+
+@theme {
+  --font-sans: "Cairo", "Tajawal", ui-sans-serif, system-ui, sans-serif;
+  --color-primary: #2B4D89;
+  --color-primary-light: #3D61A2;
+  --color-accent: #D8B448;
+  --color-accent-light: #E7C665;
+  --color-gold: #D8B448;
+}
+
+body {
+  font-family: "Cairo", "Tajawal", sans-serif;
+  background-color: #F8FAFC;
+  color: #0F172A;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Dark Mode support */
+html.dark-mode, .dark-mode {
+  --primary-color: #4C82E6;
+  --secondary-color: #1E293B;
+  --dark-color: #F8FAFC;
+  --white-color: #0F172A;
+}
+
+html.dark-mode body, .dark-mode body {
+  background-color: #0B0F19 !important;
+  color: #E2E8F0 !important;
+}
+
+html.dark-mode .bg-white, .dark-mode .bg-white {
+  background-color: #121B2A !important;
+  color: #F1F5F9 !important;
+}
+
+html.dark-mode .text-slate-900, html.dark-mode .text-gray-900, .dark-mode .text-slate-900, .dark-mode .text-gray-900 {
+  color: #F8FAFC !important;
+}
+
+html.dark-mode .text-slate-800, html.dark-mode .text-gray-800, .dark-mode .text-slate-800, .dark-mode .text-gray-800 {
+  color: #E2E8F0 !important;
+}
+
+html.dark-mode .text-slate-700, html.dark-mode .text-gray-700, .dark-mode .text-slate-700, .dark-mode .text-gray-700 {
+  color: #CBD5E1 !important;
+}
+
+html.dark-mode .text-slate-600, html.dark-mode .text-gray-600, .dark-mode .text-slate-600, .dark-mode .text-gray-650 {
+  color: #94A3B8 !important;
+}
+
+html.dark-mode .bg-slate-50, html.dark-mode .bg-gray-50, .dark-mode .bg-slate-50, .dark-mode .bg-gray-50 {
+  background-color: #0B0F19 !important;
+}
+
+html.dark-mode .bg-\[\#F8FAF9\], .dark-mode .bg-\[\#F8FAF9\] {
+  background-color: #121B2A !important;
+}
+
+html.dark-mode .bg-\[\#F0F3F7\], .dark-mode .bg-\[\#F0F3F7\] {
+  background-color: #1C283C !important;
+}
+
+html.dark-mode .shadow-xl, .dark-mode .shadow-xl {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.4) !important;
+}
+
+html.dark-mode .shadow-sm, .dark-mode .shadow-sm {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5) !important;
+}
+
+html.dark-mode .border-gray-100, html.dark-mode .border-gray-200, .dark-mode .border-gray-100, .dark-mode .border-gray-200 {
+  border-color: #232F3F !important;
+}
+
+html.dark-mode .border-slate-100, html.dark-mode .border-slate-200, .dark-mode .border-slate-100, .dark-mode .border-slate-200 {
+  border-color: #232F3F !important;
+}
+
+html.dark-mode .divide-gray-150, .dark-mode .divide-gray-150 {
+  border-color: #232F3F !important;
+}
+
+html.dark-mode th, .dark-mode th {
+  background-color: #1C283C !important;
+  color: #F8FAFC !important;
+}
+
+html.dark-mode input, html.dark-mode select, html.dark-mode textarea, .dark-mode input, .dark-mode select, .dark-mode textarea {
+  background-color: #121B2A !important;
+  color: #F8FAFC !important;
+  border-color: #232F3F !important;
+}
+
+/* Boost text contrast of low-opacity and grey labels to satisfy eye comfort constraints */
+.text-gray-500, .text-slate-500, .text-zinc-500 {
+  color: #475569 !important; /* Changed to slate-600 */
+}
+html.dark-mode .text-gray-500, html.dark-mode .text-slate-500, .dark-mode .text-gray-500, .dark-mode .text-slate-500 {
+  color: #94A3B8 !important;
+}
+.text-gray-400, .text-slate-400, .text-zinc-400 {
+  color: #5D6B7F !important; /* High contrast text gray */
+}
+html.dark-mode .text-gray-400, html.dark-mode .text-slate-400, .dark-mode .text-gray-400, .dark-mode .text-slate-400 {
+  color: #8A99AD !important;
+}
+.text-gray-300, .text-slate-300, .text-zinc-300 {
+  color: #E2E8F0 !important; /* Brighter whites on dark grounds */
+}
+
+/* Custom premium scrollbar matching Shattabha colors */
+.decor-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.decor-scrollbar::-webkit-scrollbar-track {
+  background: #F1F5F9;
+  border-radius: 8px;
+}
+.decor-scrollbar::-webkit-scrollbar-thumb {
+  background: #2B4D89;
+  border-radius: 8px;
+}
+.decor-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #1e3a6d;
+}
+.decor-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #2B4D89 #F1F5F9;
+}
+
+/* Vibrant gradients utilities */
+.vibrant-glow {
+  box-shadow: 0 4px 20px rgba(49, 84, 205, 0.25);
+}
+.vibrant-gradient-header {
+  background: linear-gradient(135deg, #3154CD 0%, #1E3A8A 100%) !important;
+}
+
+/* ✨ Beautiful Luxury Soft Ripple / Pulse Animation for Adam Assistant Launcher */
+@keyframes adam-ripple-outer {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.15;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
+@keyframes adam-ripple-inner {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.25;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(1.22);
+    opacity: 0;
+  }
+}
+
+.adam-pulse-ring-outer {
+  animation: adam-ripple-outer 4.5s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+
+.adam-pulse-ring-inner {
+  animation: adam-ripple-inner 4.5s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+  animation-delay: 2.25s;
+}
+
+@keyframes adam-button-glow {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 4px 12px rgba(43, 77, 137, 0.25)) drop-shadow(0 2px 4px rgba(216, 180, 72, 0.15));
+  }
+  50% {
+    transform: scale(1.03);
+    filter: drop-shadow(0 10px 25px rgba(43, 77, 137, 0.45)) drop-shadow(0 4px 12px rgba(216, 180, 72, 0.3));
+  }
+}
+
+.adam-active-breathing {
+  animation: adam-button-glow 4s ease-in-out infinite;
+}
+
