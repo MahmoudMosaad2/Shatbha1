@@ -75,6 +75,14 @@ const normalizeValue = (val: string) => {
 
 export default function App() {
   const [activeView, setActiveView] = useState<'HOME' | 'CLIENT' | 'COMPANY' | 'ADMIN' | 'INSPECTOR' | 'CLIENT_TERMS' | 'COMPANY_TERMS' | 'PORTAL_INSPECTOR' | 'PORTAL_COMPANY'>('HOME');
+  const [isAdminSession, setIsAdminSession] = useState(() => sessionStorage.getItem('shatibha_is_admin_mode') === 'true');
+
+  useEffect(() => {
+    if (activeView === 'ADMIN' && !isAdminSession) {
+      setIsAdminSession(true);
+      sessionStorage.setItem('shatibha_is_admin_mode', 'true');
+    }
+  }, [activeView, isAdminSession]);
   const [lang, setLang] = useState<Language>('ar');
   const [darkMode, setDarkMode] = useState(() => {
     try {
@@ -2025,6 +2033,8 @@ export default function App() {
   // Perform secure sign out and transition back to Home Landing Page
   const handleSignOut = () => {
     setActiveView('HOME');
+    setIsAdminSession(false);
+    sessionStorage.removeItem('shatibha_is_admin_mode');
     showToast(
       lang === 'en'
         ? '👋 Logged out successfully! You have been securely redirected to Shattebha public portal.'
@@ -2067,23 +2077,25 @@ export default function App() {
       <PushNotificationToaster notifications={notifications} lang={lang} />
 
       {/* 1. PRESENTATION PRESENTATION SWITCHER (Pinned at very top) */}
-      <PresentationToolbar
-        activeView={activeView === 'CLIENT_TERMS' || activeView === 'COMPANY_TERMS' ? 'HOME' : activeView}
-        setActiveView={setActiveView}
-        resetState={handleResetState}
-        clearAllRequests={handleClearAllRequests}
-        requestsCount={requests.length}
-        offersCount={offers.length}
-        lang={lang}
-        setLang={setLang}
-        notifications={notifications}
-        onMarkRead={handleMarkNotificationAsRead}
-        onMarkAllAsRead={handleMarkAllNotificationsAsRead}
-        onDeleteNotification={handleDeleteNotification}
-        onSimulatePush={handleSimulatePush}
-        darkMode={darkMode}
-        setDarkMode={setDarkMode}
-      />
+      {isAdminSession && (
+        <PresentationToolbar
+          activeView={activeView === 'CLIENT_TERMS' || activeView === 'COMPANY_TERMS' ? 'HOME' : activeView}
+          setActiveView={setActiveView}
+          resetState={handleResetState}
+          clearAllRequests={handleClearAllRequests}
+          requestsCount={requests.length}
+          offersCount={offers.length}
+          lang={lang}
+          setLang={setLang}
+          notifications={notifications}
+          onMarkRead={handleMarkNotificationAsRead}
+          onMarkAllAsRead={handleMarkAllNotificationsAsRead}
+          onDeleteNotification={handleDeleteNotification}
+          onSimulatePush={handleSimulatePush}
+          darkMode={darkMode}
+          setDarkMode={setDarkMode}
+        />
+      )}
 
       {/* Demo Notification / Toast */}
       {toastMessage && (
