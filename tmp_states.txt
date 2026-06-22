@@ -1,0 +1,33 @@
+99:  const [loginEmail, setLoginEmail] = useState('ahmed@email.com');
+100:  const [loginPassword, setLoginPassword] = useState('12345678');
+104:  const [slideIndex, setSlideIndex] = useState(0);
+107:  const [slides, setSlides] = useState(() => {
+116:  const [faqs, setFaqs] = useState(() => {
+125:  const [packages, setPackages] = useState(() => {
+134:  const [testimonials, setTestimonials] = useState(() => {
+143:  const [featuredProjects, setFeaturedProjects] = useState(() => {
+152:  const [comparison, setComparison] = useState(() => {
+285:  const [activeFeaturedProject, setActiveFeaturedProject] = useState(0);
+286:  const [activePhotoIndex, setActivePhotoIndex] = useState(0);
+287:  const [faqSearch, setFaqSearch] = useState('');
+294:  const [companyName, setCompanyName] = useState('');
+295:  const [companyEmail, setCompanyEmail] = useState('');
+296:  const [companyPhone, setCompanyPhone] = useState('');
+301:  const [isCompSubmitting, setIsCompSubmitting] = useState(false);
+302:  const [compSuccessMsg, setCompSuccessMsg] = useState(false);
+303:  const [isGovDropdownOpen, setIsGovDropdownOpen] = useState(false);
+304:  const [compError, setCompError] = useState('');
+307:  const [clientName, setClientName] = useState('');
+308:  const [clientEmail, setClientEmail] = useState('');
+309:  const [clientPhone, setClientPhone] = useState('');
+310:  const [clientPassword, setClientPassword] = useState('');
+311:  const [isClientSuccess, setIsClientSuccess] = useState(false);
+312:  const [clientAgree, setClientAgree] = useState(false);
+313:  const [companyAgree, setCompanyAgree] = useState(false);
+314:  const [showClientTermsModal, setShowClientTermsModal] = useState(false);
+315:  const [showCompanyTermsModal, setShowCompanyTermsModal] = useState(false);
+318:  const [contactPhone, setContactPhone] = useState('');
+319:  const [contactEmail, setContactEmail] = useState('');
+320:  const [contactMessage, setContactMessage] = useState('');
+321:  const [isContactSubmitting, setIsContactSubmitting] = useState(false);
+322:  const [isContactSuccess, setIsContactSuccess] = useState(false);

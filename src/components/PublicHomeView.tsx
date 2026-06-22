@@ -96,8 +96,8 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
   const [modalType, setModalType] = useState<'NONE' | 'LOGIN' | 'CLIENT' | 'COMPANY'>('NONE');
   const [authMode, setAuthMode] = useState<'LOGIN' | 'REGISTER'>('LOGIN');
   const [clientModalMode, setClientModalMode] = useState<'REGISTER' | 'LOGIN'>('REGISTER');
-  const [loginEmail, setLoginEmail] = useState('ahmed@email.com');
-  const [loginPassword, setLoginPassword] = useState('12345678');
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
   
   // Interactive Slider
   const [showAfter, setShowAfter] = useState<boolean>(true);
