@@ -2411,11 +2411,16 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
         </div>
 
         <div className="max-w-7xl mx-auto mt-10 pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-400">
-          <p>{isEn ? '© 2026 Shatibha. Engineered for absolute quality and financial safety.' : '© ٢٠٢٦ منصة شطبها. كافة الحقوق محفوظة لمجلس الإدارة والدعم الهندسي المعتمد بجودة عالية.'}</p>
-          <div className="flex gap-4 mt-2 sm:mt-0">
-            <span className="cursor-pointer hover:text-white">Facebook</span>
-            <span className="cursor-pointer hover:text-white">Instagram</span>
-            <span className="cursor-pointer hover:text-white">LinkedIn</span>
+          <p 
+            onDoubleClick={() => onNavigateToDashboard('ADMIN_LOGIN')} 
+            className="cursor-default select-none transition-colors hover:text-gray-300"
+          >
+            {isEn ? '© 2026 Shatibha. Engineered for absolute quality and financial safety.' : '© ٢٠٢٦ منصة شطبها. كافة الحقوق محفوظة لمجلس الإدارة والدعم الهندسي المعتمد بجودة عالية.'}
+          </p>
+          <div className="flex gap-4 mt-2 sm:mt-0 font-medium">
+            <span className="cursor-pointer hover:text-white transition-colors">Facebook</span>
+            <span className="cursor-pointer hover:text-white transition-colors">Instagram</span>
+            <span className="cursor-pointer hover:text-white transition-colors">LinkedIn</span>
           </div>
         </div>
       </footer>
@@ -2641,27 +2646,15 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
             <div className="grid grid-cols-2 gap-2 bg-slate-50 p-2.5 rounded-2xl border border-gray-200">
               <button 
                 onClick={() => handleQuickDemoAccess('ahmed.rashidy@gmail.com')}
-                className="p-1 px-2 border border-gray-200 bg-white hover:border-[#2B4D89] rounded-xl text-[10px] sm:text-xs font-black text-gray-700 truncate shadow-xs"
+                className="p-1 px-2 border border-gray-200 bg-white hover:border-[#2B4D89] rounded-xl text-[10px] sm:text-xs font-black text-gray-700 truncate shadow-xs cursor-pointer"
               >
                 👤 {isEn ? 'Client' : 'عميل (أحمد)'}
               </button>
               <button 
                 onClick={() => handleQuickDemoAccess('luxspace@gmail.com')}
-                className="p-1 px-2 border border-gray-200 bg-white hover:border-[#2B4D89] rounded-xl text-[10px] sm:text-xs font-black text-gray-700 truncate shadow-xs"
+                className="p-1 px-2 border border-gray-200 bg-white hover:border-[#2B4D89] rounded-xl text-[10px] sm:text-xs font-black text-gray-700 truncate shadow-xs cursor-pointer"
               >
                 🏢 {isEn ? 'Company' : 'شركة (LuxSpace)'}
-              </button>
-              <button 
-                onClick={() => handleQuickDemoAccess('admin@shattabha.com')}
-                className="p-1 px-2 border border-gray-200 bg-white hover:border-[#2B4D89] rounded-xl text-[10px] sm:text-xs font-black text-gray-700 truncate shadow-xs"
-              >
-                🛡️ {isEn ? 'Admin' : 'أدمن الإدارة'}
-              </button>
-              <button 
-                onClick={() => handleQuickDemoAccess('inspector@shattabha.com')}
-                className="p-1 px-2 border border-gray-200 bg-white hover:border-[#2B4D89] rounded-xl text-[10px] sm:text-xs font-black text-gray-700 truncate shadow-xs"
-              >
-                🕵️ {isEn ? 'Inspector' : 'مشرف (م/ كريم)'}
               </button>
             </div>
 

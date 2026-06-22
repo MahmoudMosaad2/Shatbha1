@@ -17,6 +17,7 @@ import { GlobalProjectDetailsModal } from './components/GlobalProjectDetailsModa
 import { PartnerPortalView } from './components/PartnerPortalView';
 import { AdamAvatar, AvatarStyle } from './components/AdamAvatar';
 import { SmartAdamPanel } from './components/SmartAdamPanel';
+import { AdminLoginView } from './components/AdminLoginView';
 
 import { initialRequests, initialCompanies, initialOffers, initialContracts, initialInspectors, initialProjectStages, initialNotifications, initialPromoCodes, initialWarrantyRecords, initialWarrantyComplaints, initialAuditLogs } from './data';
 import { ClientRequest, Company, Offer, Contract, Inspector, ProjectStage, Notification, PromoCode, WarrantyRecord, WarrantyComplaint, AuditLog } from './types';
@@ -74,7 +75,7 @@ const normalizeValue = (val: string) => {
 };
 
 export default function App() {
-  const [activeView, setActiveView] = useState<'HOME' | 'CLIENT' | 'COMPANY' | 'ADMIN' | 'INSPECTOR' | 'CLIENT_TERMS' | 'COMPANY_TERMS' | 'PORTAL_INSPECTOR' | 'PORTAL_COMPANY'>('HOME');
+  const [activeView, setActiveView] = useState<'HOME' | 'CLIENT' | 'COMPANY' | 'ADMIN' | 'INSPECTOR' | 'ADMIN_LOGIN' | 'CLIENT_TERMS' | 'COMPANY_TERMS' | 'PORTAL_INSPECTOR' | 'PORTAL_COMPANY'>('HOME');
   const [isAdminSession, setIsAdminSession] = useState(() => sessionStorage.getItem('shatibha_is_admin_mode') === 'true');
 
   useEffect(() => {
@@ -2136,6 +2137,14 @@ export default function App() {
               setActiveView(role);
             }}
             onNavigateHome={() => setActiveView('HOME')}
+          />
+        )}
+
+        {activeView === 'ADMIN_LOGIN' && (
+          <AdminLoginView
+            onLogin={(role) => setActiveView(role)}
+            lang={lang}
+            onBack={() => setActiveView('HOME')}
           />
         )}
 
