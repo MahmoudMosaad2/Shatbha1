@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import dotenv from "dotenv";
 import fs from "fs";
+import nodemailer from "nodemailer";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI, Type } from "@google/genai";
 import { 
@@ -135,6 +136,103 @@ app.post("/api/prices", (req, res) => {
     console.error("Error saving dynamic prices:", err);
     res.status(500).json({ error: "Failed to save prices on the server." });
   }
+});
+
+
+// ----------------- EMAIL NOTIFICATIONS API ENDPOINT -----------------
+app.post("/api/send-email", async (req, res) => {
+  const { to, subject, text, html } = req.body;
+
+  if (!to || !subject || !text) {
+    return res.status(400).json({ error: "Missing required parameters (to, subject, text)." });
+  }
+
+  // Check if Resend or SMTP is configured
+  const smtpHost = process.env.SMTP_HOST;
+  const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT) : 587;
+  const smtpUser = process.env.SMTP_USER;
+  const smtpPass = process.env.SMTP_PASS;
+  const resendKey = process.env.RESEND_API_KEY;
+
+  if (resendKey) {
+    try {
+      const response = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${resendKey}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          from: `${process.env.SMTP_FROM_NAME || "Shattabha • شطبها"} <onboarding@resend.dev>`,
+          to: [to],
+          subject: subject,
+          text: text,
+          html: html || text
+        })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log(`[Resend] Email sent successfully to ${to} for subject: ${subject}`);
+        return res.json({ success: true, provider: "resend", data });
+      } else {
+        console.error("[Resend] API Error:", data);
+        throw new Error(JSON.stringify(data));
+      }
+    } catch (err: any) {
+      console.error("[Resend] Failed to send email via Resend API:", err);
+    }
+  }
+
+  if (smtpHost && smtpUser && smtpPass) {
+    try {
+      const transporter = nodemailer.createTransport({
+        host: smtpHost,
+        port: smtpPort,
+        secure: smtpPort === 465 || process.env.SMTP_SECURE === "true",
+        auth: {
+          user: smtpUser,
+          pass: smtpPass
+        },
+        tls: {
+          rejectUnauthorized: false
+        }
+      });
+
+      const mailOptions = {
+        from: `"${process.env.SMTP_FROM_NAME || "شطبها • Shattabha"}" <${process.env.SMTP_FROM_EMAIL || smtpUser}>`,
+        to,
+        subject,
+        text,
+        html: html || text
+      };
+
+      const info = await transporter.sendMail(mailOptions);
+      console.log(`[SMTP] Email successfully delivered to ${to}. MessageId: ${info.messageId}`);
+      return res.json({ success: true, provider: "smtp", messageId: info.messageId });
+    } catch (err: any) {
+      console.error(`[SMTP] Error sending email to ${to}:`, err);
+      return res.status(500).json({ 
+        success: false, 
+        error: "SMTP delivery failed", 
+        details: err.message || err 
+      });
+    }
+  }
+
+  // Fallback: Simulation mode log
+  console.log("\n========================================================");
+  console.log("             📬 [EMAIL NOTIFICATION DISPATCH - DEVMGMT] ");
+  console.log(`To:      ${to}`);
+  console.log(`Subject: ${subject}`);
+  console.log("--------------------------------------------------------");
+  console.log(`Text:    ${text}`);
+  console.log("========================================================\n");
+
+  return res.json({ 
+    success: true, 
+    simulated: true, 
+    message: "Email logged to console. To enable actual delivery, configure SMTP_HOST or RESEND_API_KEY inside your Secrets panel!" 
+  });
 });
 
 

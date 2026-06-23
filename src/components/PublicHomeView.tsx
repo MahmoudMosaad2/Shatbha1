@@ -41,6 +41,7 @@ import { Company, ClientRequest } from '../types';
 import { Language, getTranslation } from '../lib/translations';
 import { ShattabhaLogo } from './ShattabhaLogo';
 import { motion, AnimatePresence } from 'motion/react';
+import { socialSignIn } from '../lib/firebaseAuth';
 import { 
   HOME_DEFAULT_SLIDES as RAW_HOME_DEFAULT_SLIDES, 
   HOME_COMPARISON as RAW_HOME_COMPARISON, 
@@ -98,6 +99,9 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
   const [clientModalMode, setClientModalMode] = useState<'REGISTER' | 'LOGIN'>('REGISTER');
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+  const [socialConfigModal, setSocialConfigModal] = useState<{ provider: string; errorMsg?: string } | null>(null);
+  
+
   
   // Interactive Slider
   const [showAfter, setShowAfter] = useState<boolean>(true);
@@ -420,6 +424,9 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
       return;
     }
     
+    localStorage.setItem('shattabba_client_name', clientName);
+    localStorage.setItem('shattabba_client_email', clientEmail);
+    
     onRegisterClient(clientName, clientEmail, clientPhone);
     setIsClientSuccess(true);
     setTimeout(() => {
@@ -431,17 +438,95 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
     }, 1200);
   };
 
-  const handleSocialRegister = (provider: string) => {
-    const mockNames = {
-      Google: 'أحمد (مسجّل عبر Google)',
-      Facebook: 'أحمد (مسجّل عبر Facebook)',
-      Apple: 'أحمد (مسجّل عبر Apple ID)'
-    };
-    const selectedName = mockNames[provider as keyof typeof mockNames] || 'أحمد المعتمد';
-    onRegisterClient(selectedName, `social_${provider.toLowerCase()}@shattabha.com`, '01002233445');
+  const handleSocialRegister = async (provider: string) => {
+    // If Facebook or Apple, show our dedicated helpful diagnostic and bypass modal
+    if (provider === 'Facebook' || provider === 'Apple') {
+      setSocialConfigModal({ provider, errorMsg: undefined });
+      return;
+    }
+
+    try {
+      const result = await socialSignIn(provider as 'Google' | 'Facebook' | 'Apple');
+      if (result) {
+        const { user } = result;
+        const displayName = user.displayName || (isEn ? 'Client' : 'العميل');
+        const userEmail = user.email || `user_${user.uid}@gmail.com`;
+        
+        localStorage.setItem('shattabba_client_name', displayName);
+        localStorage.setItem('shattabba_client_email', userEmail);
+        
+        if (authMode === 'REGISTER') {
+          onRegisterClient(displayName, userEmail, '01000000000');
+        }
+        
+        setModalType('NONE');
+        onNavigateToDashboard('CLIENT');
+      }
+    } catch (error: any) {
+      console.error('Login failed:', error);
+      const isEn = lang === 'en';
+      let errorDets = error.message || String(error);
+      if (error.code === 'auth/operation-not-allowed') {
+        errorDets = isEn 
+          ? `Currently, ${provider} login is not enabled in the Firebase Console. You must enable it under Authentication -> Sign-in method.` 
+          : `تسجيل الدخول عبر ${provider} لا يزال غير مفعّل في منصة جيوغل فايربيس (Firebase Console). يجب تفعيل ميزة ${provider} وتمرير بيانات الـ App ID والـ Secret Key.`;
+      }
+      setSocialConfigModal({ provider, errorMsg: errorDets });
+    }
+  };
+
+  const handleBypassSocialLog = (providerName: string) => {
+    const isEn = lang === 'en';
+    const fakeName = providerName === 'Apple' 
+      ? (isEn ? 'Ahmed Al-Rashidy (Apple Sync 🍏)' : 'أحمد الرشيدي (بوابة Apple 🍏)')
+      : (isEn ? 'Ahmed Al-Rashidy (Facebook 👥)' : 'أحمد الرشيدي (بوابة فيسبوك 👥)');
+    
+    const fakeEmail = providerName === 'Apple' 
+      ? 'ahmed.rashidy.apple@shattabba.com' 
+      : 'ahmed.rashidy.fb@shattabba.com';
+
+    localStorage.setItem('shattabba_client_name', fakeName);
+    localStorage.setItem('shattabba_client_email', fakeEmail);
+    
+    onRegisterClient(fakeName, fakeEmail, '01000000000');
+    setSocialConfigModal(null);
     setModalType('NONE');
     onNavigateToDashboard('CLIENT');
   };
+
+  const handleRunRealSocialRegister = async (provider: string) => {
+    try {
+      const result = await socialSignIn(provider as 'Google' | 'Facebook' | 'Apple');
+      if (result) {
+        const { user } = result;
+        const displayName = user.displayName || (isEn ? 'Client' : 'العميل');
+        const userEmail = user.email || `user_${user.uid}@gmail.com`;
+        
+        localStorage.setItem('shattabba_client_name', displayName);
+        localStorage.setItem('shattabba_client_email', userEmail);
+        
+        if (authMode === 'REGISTER') {
+          onRegisterClient(displayName, userEmail, '01000000000');
+        }
+        
+        setSocialConfigModal(null);
+        setModalType('NONE');
+        onNavigateToDashboard('CLIENT');
+      }
+    } catch (error: any) {
+      console.error('Real login failed:', error);
+      const isEn = lang === 'en';
+      let errorDets = error.message || String(error);
+      if (error.code === 'auth/operation-not-allowed') {
+        errorDets = isEn 
+          ? `Currently, ${provider} login is not enabled in the Firebase Console. Please enable Facebook/Apple under Authentication -> Sign-in method.` 
+          : `ميزة تسجيل الدخول لـ ${provider} غير مفعّلة في لوحة تحكم Firebase بمشروعك. لتفعيلها، تفضل بالانتقال إلى Authentication -> Sign-in system.`;
+      }
+      setSocialConfigModal({ provider, errorMsg: errorDets });
+    }
+  };
+
+
 
   const handleQuickDemoAccess = (email: string) => {
     let role: 'CLIENT' | 'COMPANY' | 'ADMIN' | 'INSPECTOR' = 'CLIENT';
@@ -453,6 +538,10 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
       role = 'COMPANY';
     } else {
       role = 'CLIENT';
+      localStorage.setItem('shattabba_client_email', email);
+      if (email === 'ahmed.rashidy@gmail.com') {
+        localStorage.setItem('shattabba_client_name', 'أحمد محمود الرشيدي');
+      }
     }
     setLoginEmail(email);
     setLoginPassword('12345678');
@@ -2471,6 +2560,7 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
                     role = 'COMPANY';
                   } else {
                     role = 'CLIENT';
+                    localStorage.setItem('shattabba_client_email', email);
                   }
                   setModalType('NONE');
                   onNavigateToDashboard(role);
@@ -2776,7 +2866,7 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
                   <form 
                     onSubmit={(e) => {
                       e.preventDefault();
-                      const email = clientEmail.trim().toLowerCase() || 'ahmed.rashidy@gmail.com';
+                      const email = clientEmail.trim().toLowerCase();
                       let role: 'CLIENT' | 'COMPANY' | 'ADMIN' | 'INSPECTOR' = 'CLIENT';
                       
                       if (email === 'admin@shattabha.com' || email.includes('admin')) {
@@ -2787,6 +2877,7 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
                         role = 'COMPANY';
                       } else {
                         role = 'CLIENT';
+                        localStorage.setItem('shattabba_client_email', email);
                       }
                       setModalType('NONE');
                       onNavigateToDashboard(role);
@@ -3134,6 +3225,90 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
             >
               {isEn ? 'Accept & Continue' : 'أوافق ومستعد للمتابعة'}
             </button>
+          </div>
+        </div>
+      )}
+
+      {socialConfigModal && (
+        <div className="fixed inset-0 z-[5000] flex items-center justify-center bg-black/70 backdrop-blur-md p-4 text-right">
+          <div className="bg-white rounded-[32px] shadow-2xl p-6 sm:p-8 w-full max-w-[500px] relative border border-slate-100 max-h-[90vh] overflow-y-auto">
+            
+            <button 
+              onClick={() => setSocialConfigModal(null)}
+              className="absolute top-4 left-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center font-bold transition-colors"
+            >
+              ✕
+            </button>
+
+            <div className="text-center mb-5">
+              <span className="text-4xl block mb-2">{socialConfigModal.provider === 'Apple' ? '🍏' : '👥'}</span>
+              <h3 className="font-black text-lg text-slate-800">
+                {isEn 
+                  ? `${socialConfigModal.provider} Authentication Service` 
+                  : `بوابة المصادقة لـ ${socialConfigModal.provider}`}
+              </h3>
+              <p className="text-[11px] text-gray-400 font-bold mt-1">
+                {isEn 
+                  ? 'Integration and Local Sandbox Diagnostics' 
+                  : 'مؤشرات التكامل وتهيئة الدخول المستقل'}
+              </p>
+            </div>
+
+            {/* Explanatory text & dynamic warnings */}
+            <div className="space-y-4 text-xs text-slate-600 leading-relaxed font-semibold">
+              <div className="p-4 bg-slate-50 border border-slate-100 rounded-2xl">
+                <p className="text-xs text-slate-700 font-black mb-1.5 flex items-center justify-end gap-1.5">
+                  🛡️ {isEn ? 'Sandbox & Iframe Constraint Notice' : 'ملاحظة قيود الإطار والبيئة التجريبية'}
+                </p>
+                <p className="text-[11px] text-gray-500 leading-normal">
+                  {isEn 
+                    ? `By default, direct popup-based authentication with ${socialConfigModal.provider} inside the preview iframe needs OAuth client registration. The site operator must configure API keys under Firebase Console -> Auth.`
+                    : `تسجيل الدخول الحقيقي عبر ${socialConfigModal.provider} يتطلب إرفاق مفاتيح ومصادقات Meta/Apple الخاصة بعقد شركتك في لوحة تحكّم Firebase Console تحت قسم (Authentication -> Sign-in methods).`}
+                </p>
+              </div>
+
+              {socialConfigModal.errorMsg && (
+                <div className="p-3.5 bg-rose-50 border border-rose-100 rounded-2xl text-rose-800 font-medium">
+                  <span className="text-[11px] font-black text-rose-900 block mb-1">⚠️ Error Details / تفاصيل المشكلة الفنية:</span>
+                  <p className="font-mono text-[10px] break-all text-rose-800 leading-normal bg-white/70 p-2 rounded-lg">{socialConfigModal.errorMsg}</p>
+                </div>
+              )}
+
+              {/* Instructions on how to fix config */}
+              <div className="space-y-2">
+                <span className="text-xs font-black text-[#2B4D89] block">
+                  🛠️ {isEn ? 'How to configure this provider in your Firebase project:' : 'كيفية تهيئة هذه الخدمة في مشروعك الفايربيس:'}
+                </span>
+                <ol className="list-decimal list-inside space-y-1 text-gray-500 text-[11px] pr-2 leading-relaxed">
+                  <li>{isEn ? 'Go to Firebase Console -> Authentication -> Sign-in method.' : 'انتقل إلى لوحة Firebase -> قسم الـ Authentication ثم Sign-in method.'}</li>
+                  <li>{isEn ? `Add New Provider and select "${socialConfigModal.provider}".` : `اضغط إضافة موفر جديد واختر "${socialConfigModal.provider === 'Apple' ? 'Apple' : 'Facebook'}".`}</li>
+                  <li>{isEn ? `Fill in the Client ID and Client Secret from developer credentials.` : `أضف بيانات الـ App ID والـ App Secret من حساب المبرمجين الخاص بك.`}</li>
+                  <li>{isEn ? 'Ensure OAuth redirect URI is whitelisted.' : 'تأكد من إدراج رابط إعادة التوجيه للـ OAuth ضمن مخدماتك الموثقة.'}</li>
+                </ol>
+              </div>
+
+              {/* Actions Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-gray-100">
+                {/* 1. Try Live Session */}
+                <button
+                  type="button"
+                  onClick={() => handleRunRealSocialRegister(socialConfigModal.provider)}
+                  className="w-full py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1 cursor-pointer order-2 sm:order-1"
+                >
+                  📡 {isEn ? 'Invoke Live Auth' : 'استدعاء المصادقة الحية'}
+                </button>
+
+                {/* 2. Bypass / Simulate (HIGHLY RECOMMEND) */}
+                <button
+                  type="button"
+                  onClick={() => handleBypassSocialLog(socialConfigModal.provider)}
+                  className="w-full py-3 px-4 bg-[#2B4D89] hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow-lg transition-all flex items-center justify-center gap-1 cursor-pointer order-1 sm:order-2"
+                >
+                  ✨ {isEn ? 'Bypass & Demo Sign-in' : 'دخول تجريبي سريع ومحاكاة'}
+                </button>
+              </div>
+            </div>
+
           </div>
         </div>
       )}

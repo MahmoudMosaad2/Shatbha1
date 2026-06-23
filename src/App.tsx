@@ -173,7 +173,11 @@ export default function App() {
   };
 
   // Core Reactive States with robust existence check
-  const [requests, setRequests] = useState<ClientRequest[]>(() => loadStoredData('shatibha_requests', initialRequests));
+  const [requests, setRequests] = useState<ClientRequest[]>(() => {
+    const loaded = loadStoredData('shatibha_requests', initialRequests) as ClientRequest[];
+    // Clean up any previously auto-generated mock requests to fix the bug where users see requests they didn't create
+    return loaded.filter(r => r.notes !== 'طلب تشطيب جديد مضاف تلقائياً لحسابك المفعّل فور تسجيلك بموقع شطبها.');
+  });
   const [companies, setCompanies] = useState<Company[]>(() => loadStoredData('shatibha_companies', initialCompanies));
   const [offers, setOffers] = useState<Offer[]>(() => loadStoredData('shatibha_offers', initialOffers));
   const [contracts, setContracts] = useState<Contract[]>(() => loadStoredData('shatibha_contracts', initialContracts));
@@ -186,6 +190,18 @@ export default function App() {
   const [warranties, setWarranties] = useState<WarrantyRecord[]>(() => loadStoredData('shatibha_warranties', initialWarrantyRecords));
   const [complaints, setComplaints] = useState<WarrantyComplaint[]>(() => loadStoredData('shatibha_complaints', initialWarrantyComplaints));
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>(() => loadStoredData('shatibha_audit_logs', initialAuditLogs));
+
+  // --- EMAIL NOTIFICATION SIMULATION STATES ---
+  const [simulatedEmails, setSimulatedEmails] = useState<any[]>(() => {
+    try {
+      const saved = localStorage.getItem('shatibha_simulated_emails');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [activeSimulatedEmail, setActiveSimulatedEmail] = useState<any | null>(null);
+  const [isEmailLogOpen, setIsEmailLogOpen] = useState(false);
 
   // --- GLOBAL ASSISTANT CHAT STATES & HANDLER WITH DYNAMIC AVATAR ---
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
@@ -873,6 +889,73 @@ export default function App() {
     }, 6000);
   };
 
+  const triggerSimulatedEmailNotification = (to: string, subject: string, body: string, type: 'CONTRACT_SIGNED' | 'STAGE_APPROVED') => {
+    const newMail = {
+      id: `SIM-MAIL-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      to,
+      from: 'no-reply@shattabba.com',
+      subject,
+      body,
+      timestamp: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+      date: new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric' }),
+      type
+    };
+    setSimulatedEmails(prev => {
+      const updated = [newMail, ...prev];
+      try {
+        localStorage.setItem('shatibha_simulated_emails', JSON.stringify(updated));
+      } catch (err) {
+        console.error(err);
+      }
+      return updated;
+    });
+    setActiveSimulatedEmail(newMail);
+    
+    showToast(lang === 'en' 
+      ? `📧 [Email Simulation] Critical email sent to ${to}: ${subject}` 
+      : `📧 [محاكاة بريد إلكتروني] تم إرسال إشعار بريدي إلى: ${to}. العنوان: ${subject}`
+    );
+  };
+
+  const triggerLiveEmailNotification = async (
+    to: string,
+    subject: string,
+    bodyText: string,
+    type: 'CONTRACT_SIGNED' | 'STAGE_APPROVED' | 'OFFER_RECEIVED'
+  ) => {
+    // 1. Log to the internal simulator system so the user can see it inside the inbox panel
+    triggerSimulatedEmailNotification(to, subject, bodyText, type as any);
+
+    // 2. Make an asynchronous call to our live Express backend mailer api
+    try {
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to,
+          subject,
+          text: bodyText,
+          html: `
+            <div style="font-family: Arial, sans-serif; direction: rtl; text-align: right; font-size: 14px; line-height: 1.6; color: #333; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e1e1e1; border-radius: 8px; background-color: #fcfcfc;">
+              <h2 style="color: #2b4d89; border-bottom: 2px solid #2b4d89; padding-bottom: 8px;">منصة شطبها • Shattabha Platform</h2>
+              <div style="margin: 20px 0; font-size: 15px; color: #111;">
+                ${bodyText.replace(/\n/g, '<br/>')}
+              </div>
+              <hr style="border: none; border-top: 1px solid #e1e1e1; margin: 20px 0;"/>
+              <p style="font-size: 11px; color: #999; text-align: center;">مراسلة تلقائية رسمية من خوادم شطبها للتطوير المعماري والديكور المحدودة</p>
+            </div>
+          `
+        })
+      });
+      const data = await response.json();
+      console.log('Live email delivery response:', data);
+    } catch (err) {
+      console.error('An error occurred during real email delivery dispatch:', err);
+    }
+  };
+
   // Reset demo back to baseline
   const handleResetState = () => {
     setRequests(initialRequests);
@@ -902,6 +985,36 @@ export default function App() {
 
   const handleUpdateCompany = (companyId: string, updates: Partial<Company>) => {
     setCompanies(prev => prev.map(c => c.id === companyId ? { ...c, ...updates } : c));
+  };
+
+  const handleToggleVerifyCompany = (companyId: string) => {
+    setCompanies(prev =>
+      prev.map(c =>
+        c.id === companyId
+          ? { ...c, isVerified: !c.isVerified }
+          : c
+      )
+    );
+    showToast(
+      lang === 'en'
+        ? '🛡️ Company verification status updated!'
+        : '🛡️ تم تحديث حالة توثيق شركة التشطيبات بنجاح!'
+    );
+  };
+
+  const handleUpdateCompanyRating = (companyId: string, rating: number) => {
+    setCompanies(prev =>
+      prev.map(c =>
+        c.id === companyId
+          ? { ...c, rating: rating }
+          : c
+      )
+    );
+    showToast(
+      lang === 'en'
+        ? '⭐ Company rating updated successfully!'
+        : '⭐ تم تحديث تقييم شركة التشطيبات بنجاح!'
+    );
   };
 
   // TECHNICAL INSPECTOR TRIGGERS: Adding site inspection approval status (stages & payments locking)
@@ -998,6 +1111,38 @@ export default function App() {
             stage.requestId
           );
         }
+
+        // 📧 Simulate email to client upon stage approval
+        triggerSimulatedEmailNotification(
+          parentRequest?.clientEmail || 'client@shattabba.com',
+          lang === 'en'
+            ? `✅ stage "${stage.name}" approved for project #${stage.requestId}`
+            : `✅ تم الاعتماد الفني بنجاح لـ (${stage.name}) لمشروعكم رقم (${stage.requestId})`,
+          `<div style="font-family: sans-serif; direction: rtl; text-align: right; border: 1px solid #e2e8f0; padding: 24px; border-radius: 16px; background-color: #f0fdf4; max-width: 600px; margin: auto; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+            <div style="text-align: center; margin-bottom: 20px;">
+              <span style="font-size: 40px;">✅</span>
+            </div>
+            <h2 style="color: #166534; margin-top: 0;">مرحباً ${clientName}،</h2>
+            <p style="font-size: 15px; color: #1f2937; line-height: 1.6;">
+              أهلاً بك! نسعد بإشعارك بأن المهندس المشرف المستقل الموكل من منصة <strong>شطبها</strong> قد قام بالمعاينة الميدانية بخصوص <strong>(${stage.name})</strong> لمشروعك رقم <strong>(${stage.requestId})</strong> واعتمد مطابقتها الفنية الكاملة لأصول الحرفة والأكواد المعتمدة!
+            </p>
+            <div style="background-color: #ffffff; border: 1px solid #bbf7d0; border-radius: 12px; padding: 16px; margin: 20px 0; font-style: italic; color: #15803d; font-size: 14px;">
+              💬 <strong>ملاحظات المهندس الفني:</strong><br>
+              "${updates.reportText || 'البند مطابق تماماً للمواصفات الفنية المعتمدة في كراسة الشروط وتمت تجربته واختباره بنجاح.'}"
+            </div>
+            <p style="font-size: 15px; color: #1f2937; line-height: 1.6;">
+              الدفعة المخصصة لهذا البند (نسبة %${stage.paymentPercentage || 15}) آمنة في حساب الضمان التابع للمنصة ومستحقة الصرف الآن للمقاول بمجرد تأكيدك والإفراج المالي عنها بضغطة زر من صفحة مشروعك.
+            </p>
+            <div style="text-align: center; margin-top: 28px;">
+              <a href="#" style="background-color: #166534; color: #ffffff; padding: 12px 28px; border-radius: 10px; font-weight: bold; text-decoration: none; display: inline-block; font-size: 14px; box-shadow: 0 4px 6px rgba(22, 101, 52, 0.2);">الإفراج المالي للدفعة الآن</a>
+            </div>
+            <hr style="border: none; border-top: 1px solid #dcfce7; margin: 20px 0;">
+            <p style="font-size: 12px; color: #6b7280; text-align: center; margin-bottom: 0;">
+              هذه رسالة آلية من نظام محاكاة الإشعارات لمنصة شطبها لضمان تجربة حقيقية متكاملة لرحلة العميل.
+            </p>
+          </div>`,
+          'STAGE_APPROVED'
+        );
       } else if (updates.status === 'REJECTED' || updates.status === 'INSPECTION_FAILED') {
         logAudit(parentRequest?.assignedInspectorId || 'INSP-2', 'م/ الاستشاري', 'INSPECTOR', `رفض استلام مرحلة ${stage.name} لوجود عيوب فنية`, `Inspector rejected stage ${stage.name}`, `ملاحظات عدم المطابقة: ${updates.rejectedNotes || 'عيوب في استلام البنود الموضحة بالصور'}`);
         showToast('❌ تم رصد عيوب فنية! تسجيل تقرير الرفض وإشعار شركة المقاولة للتعديل الفوري.');
@@ -1358,230 +1503,90 @@ export default function App() {
 
     // 2. Move request status to selected, and apply the automatically assigned inspector ID
     setRequests(prev =>
-      prev.map(r => 
-        r.id === requestId 
-          ? { 
-              ...r, 
-              status: 'CONTRACT_AWARD_PENDING', 
-              assignedInspectorId: assignedId || r.assignedInspectorId 
-            } 
+      prev.map(r =>
+        r.id === requestId
+          ? {
+              ...r,
+              status: 'CLIENT_SELECTED',
+              selectedOfferId: offer.id,
+              selectedCompanyId: offer.companyId,
+              assignedInspectorId: assignedId || r.assignedInspectorId,
+            }
           : r
       )
     );
 
-    // 3. Update active project workload count inside inspectors state to ensure consistency
-    if (assignedId) {
-      setInspectors(prev =>
-        prev.map(ins => {
-          if (ins.id === assignedId) {
-            return { ...ins, activeProjectsCount: ins.activeProjectsCount + 1 };
-          }
-          return ins;
-        })
-      );
-    }
-
-    // 4. Automatically seed a coordination Contract record
-    const newContract: Contract = {
-      id: `CTR-${Date.now()}`,
-      requestId: requestId,
-      companyId: offer.companyId,
-      totalAmount: offer.price,
-      commissionRate: 0.05,
-      commissionAmt: offer.price * 0.05, // 5% fee calculated automatically
-      inspectionDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 5 days from now
-      meetingDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],   // 7 days from now
-      status: 'جاري التنسيق',
-      isSigned: false,
-      createdAt: new Date().toISOString().split('T')[0]
-    };
-
-    setContracts(prev => [newContract, ...prev]);
-
-    const assignmentAlertText = chosenInspectorNameAr 
-      ? ` وتم إسناد الوحدة تلقائياً إلى الاستشاري الأقرب م/ ${chosenInspectorNameAr} كونه الأقل حملاً للمشاريع!` 
-      : '';
-    showToast(`🤝 تهانينا! قمت باختيار "عرض السعر" للطلب ${requestId}.${assignmentAlertText} تم تحويل الطلب للإشراف، انتقل لـ "لوحة الإدارة" لتنسيق الاجتماع.`);
-
-    // 5. Notify the selected company partner
-    const winningCompany = companies.find(c => c.id === offer.companyId);
-    if (winningCompany) {
+    // 3. Keep selected company notified
+    const comp = companies.find(c => c.id === offer.companyId);
+    if (comp) {
       addNotification(
-        winningCompany.userId,
-        '🏆 تم اختيار عرض أسعارك • Offer Selected by Client!',
-        `تهانينا الفائقة! تم اختيار عرض أسعارك المقدم للطلب رقم (${requestId}) بقيمة ${offer.price.toLocaleString()} ج.م من قبل العميل. جاري جدولة اللقاء وصياغة العقود وتنسيق البنود التفصيلية. • Excellent news! Client accepted your bid of ${offer.price.toLocaleString()} EGP for tender (${requestId}). Preparation for coordination and contract signing is underway.`,
+        comp.userId,
+        '🎉 لبيك يا عميل! تم اختيار عرض الأسعار المالي الخاص بك للطلب ورسم البنود • Offer Accepted & Inspector Appointed',
+        `حظي عرض الأسعار الفني والمالي الخاص بك للوحدة رقم (${requestId}) بالقبول والاعتماد من السيد العميل! تم تعيين الباشمهندس م/ ${chosenInspectorNameAr || 'المختص'} للإشراف المستقل والبدء بزيارة المعاينة المشتركة في غضون أيام. • Client accepted your pricing bid of ${offer.price.toLocaleString()} EGP. Coordination is active.`,
         requestId
       );
     }
 
-    // 6. Notify Admin
-    addNotification(
-      'ADMIN',
-      '🤝 قبول عرض واختيار مقاول • Client Accepted a Bid',
-      `استقر العميل على العرض الفائز للطلب (${requestId}) بقيمة ${offer.price.toLocaleString()} ج.م.${chosenInspectorNameAr ? ` تم تعيين المشرف م/ ${chosenInspectorNameAr} تلقائياً لتغطية الموقع.` : ''} يرجى تحديد موعد اللقاء الثنائي وصياغة البنود. • Client accepted bid for request (${requestId}). Coordinate tripartite meetings.`,
-      requestId
+    if (reqObj) {
+      addNotification(
+        reqObj.clientId,
+        '🤝 تم قبول عرض التشطيب رسمياً • Offer Accepted Successfully',
+        `نهنئك بقبول العرض المالي المقدم من (${offer.companyName}) لطلبك رقم (${requestId}) بقيمة إجمالية قدرها ${offer.price.toLocaleString()} ج.م. تم إمداد المهندس م/ ${chosenInspectorNameAr || 'المختص'} بكافة الكروكيات للزيارة الميدانية. • Your trade agreement is signed. Field inspection coordinates will follow.`,
+        requestId
+      );
+    }
+
+    showToast(
+      lang === 'en'
+        ? '🤝 Offer selected successfully! Pre-contractual phase loaded.'
+        : '🤝 تم قبول عرض المعاينة وسحب عقود المظلات والتأسيس بنجاح! يبدأ الآن التنسيق الميداني المباشر.'
     );
-
-    // 7. Notify assigned Inspector about the automatic assignment
-    if (assignedId && chosenInspectorNameAr) {
-      addNotification(
-        assignedId,
-        '📋 تكليف تلقائي بمشروع • New Site Inspection Automatically Assigned',
-        `وفقاً لتوزيع التغطية وتقليل ضغط الأعمال، تم إسناد مشروع الطلب رقم (${requestId}) بمنطقة (${reqObj?.city || reqObj?.governorate}) إليك تلقائياً لاستلام البنود وجدولة المعاينات الميدانية المعتمدة. • You have been automatically selected as lead inspector for request (${requestId}) based on location and minimum workload algorithm.`,
-        requestId
-      );
-    }
   };
 
-  // CLIENT TRIGGERS: Retracting accepted offer
   const handleCancelAcceptOffer = (requestId: string) => {
-    const reqObj = requests.find(r => r.id === requestId);
-    if (reqObj) {
-      if (reqObj.assignedInspectorId) {
-        setInspectors(prev =>
-          prev.map(ins => {
-            if (ins.id === reqObj.assignedInspectorId) {
-              return { ...ins, activeProjectsCount: Math.max(0, ins.activeProjectsCount - 1) };
-            }
-            return ins;
-          })
-        );
-      }
-    }
-
-    // Clear contract(s) related to this request that are not signed yet
-    setContracts(prev => prev.filter(c => !(c.requestId === requestId && !c.isSigned)));
-
-    // Reset request status to OFFERS_RECEIVED and clear assigned inspector
     setRequests(prev =>
       prev.map(r =>
         r.id === requestId
           ? {
               ...r,
-              status: 'OFFERS_RECEIVED',
-              assignedInspectorId: undefined
+              status: 'UNDER_PRICING',
+              selectedOfferId: undefined,
+              selectedCompanyId: undefined,
             }
           : r
       )
     );
-
-    showToast(`🔄 تم التراجع عن قبول العرض وإلغاء اختياره بنجاح. المقايسة الآن مفتوحة وبإمكانك مراجعة كافة العروض وتحديد عرض بديل.`);
-
-    if (reqObj) {
-      addNotification(
-        reqObj.clientId,
-        '🔄 تم التراجع عن قبول عرض السعر • Offer Acceptance Cancelled',
-        `تم إلغاء قبول العرض للمشروع (${requestId}) بنجاح وإعادة طرحه للمقارنة واختيار عرض آخر. • You have cancelled the accepted proposal for request ${requestId}. You can now view and accept other bids.`,
-        requestId
-      );
-
-      addNotification(
-        'ADMIN',
-        '⚠️ إلغاء اختيار عرض السعر • Client Cancelled Offer Selection',
-        `قام العميل بإلغاء قبول العرض المبدئي للطلب رقم (${requestId}) وإعادته لمرحلة فحص ومقارنة العروض المتاحة. • Client revoked selected bid for request (${requestId}).`,
-        requestId
-      );
-    }
-  };
-
-  // PUBLIC/COMPANY TRIGGERS: Registering new company
-  const handleAddCompany = (newCompany: Company) => {
-    setCompanies(prev => [...prev, newCompany]);
-    showToast(`🏢 تم تسجيل شركتك "${newCompany.companyName}" بحالة معلقة. توجه لـ "لوحة الإدارة" لتفعيلها.`);
-
-    // Notify admins of new partnership signup
-    addNotification(
-      'ADMIN',
-      '🆕 شركة تشطيبات جديدة للتسجيل • New Contractor Signup',
-      `سجلت الشركة الجديدة (${newCompany.companyName}) في المنصة بحالة "معلقة". يرجى التحقق من الملفات السجل الضريبي والمستندات لتفعيل حسابها. • New partner (${newCompany.companyName}) registered and is awaiting credentials approval.`,
-      newCompany.id
+    showToast(
+      lang === 'en'
+        ? '⚠️ Offer selection canceled. Request reverted to pricing phase.'
+        : '⚠️ تم إلغاء اختيار العرض وإعادة الطلب لمرحلة تلقي عروض أسعار المقاولين.'
     );
   };
-
-  // CLIENT TRIGGERS: Mock registration
   const handleRegisterClient = (clientName: string, email: string, phone: string) => {
-    const newId = `REQ-NEW-${Date.now().toString().slice(-4)}`;
+    const newClientId = `ID#${Math.floor(100000 + Math.random() * 900000)}`;
     
-    // Create a default request for the newly registered client
-    const newRequest: ClientRequest = {
-      id: newId,
-      clientId: `ID#${Math.floor(100000 + Math.random() * 900000)}`,
-      clientName: clientName,
-      clientPhone: phone,
-      clientEmail: email,
-      unitType: 'شقة',
-      area: 140,
-      governorate: 'القاهرة',
-      city: 'القاهرة الجديدة',
-      finishingLevel: 'سوبر لوكس',
-      budget: 200000,
-      notes: 'طلب تشطيب جديد مضاف تلقائياً لحسابك المفعّل فور تسجيلك بموقع شطبها.',
-      status: 'PENDING_REVIEW', // Start with PENDING_REVIEW (under technical review)
-      createdAt: new Date().toISOString().split('T')[0]
-    };
-
-    // Seed default stages for the new request so they can see and manage progress
-    const defaultStagesForRequest: ProjectStage[] = [
-      {
-        id: `STG-${newId}-1`,
-        requestId: newId,
-        name: 'تأسيس السباكة والصرف',
-        status: 'NOT_STARTED',
-        progress: 0,
-        totalDurationDays: 15,
-        daysElapsed: 0,
-        images: [],
-        inspectionRequested: false,
-        paymentReleased: false
-      },
-      {
-        id: `STG-${newId}-2`,
-        requestId: newId,
-        name: 'تأسيس الكهرباء والإنارة',
-        status: 'NOT_STARTED',
-        progress: 0,
-        totalDurationDays: 15,
-        daysElapsed: 0,
-        images: [],
-        inspectionRequested: false,
-        paymentReleased: false
-      },
-      {
-        id: `STG-${newId}-3`,
-        requestId: newId,
-        name: 'أعمال المحارة والأسقف',
-        status: 'NOT_STARTED',
-        progress: 0,
-        totalDurationDays: 20,
-        daysElapsed: 0,
-        images: [],
-        inspectionRequested: false,
-        paymentReleased: false
-      },
-      {
-        id: `STG-${newId}-4`,
-        requestId: newId,
-        name: 'الدهانات والتشطيب النهائي',
-        status: 'NOT_STARTED',
-        progress: 0,
-        totalDurationDays: 30,
-        daysElapsed: 0,
-        images: [],
-        inspectionRequested: false,
-        paymentReleased: false
-      }
-    ];
-
-    setRequests(prev => [newRequest, ...prev]);
-    setStages(prev => [...prev, ...defaultStagesForRequest]);
-    showToast(`👤 مرحباً بك يا سيد ${clientName}! تم تسجيل وتفعيل حسابك تلقائياً برقم الطلب ${newId} في المنظومة.`);
+    showToast(`👤 مرحباً بك يا سيد ${clientName}! تم تسجيل وتفعيل حسابك بنجاح في المنظومة.`);
 
     // Welcome Notification for newly registered client
     addNotification(
-      newRequest.clientId,
+      newClientId,
       '🎉 أهلاً بك في منصة شطبها • Account Activated & Ready!',
-      `مرحباً بك يا سيد ${clientName}! تم تسجيل حسابك كعميل جديد وتفعيل الطلب رقم (${newId}) بنجاح لدخول المناقصة المغلقة. • Welcome! Your client account is active. Default finishing request (${newId}) is live.`,
-      newId
+      `مرحباً بك يا سيد ${clientName}! تم تسجيل حسابك كعميل جديد جاهز لإضافة مشاريعك والحصول على أفضل عروض التشطيب. • Welcome! Your client account is active and ready to create finishing requests.`
+    );
+  };
+
+  const handleAddCompany = (newCompany: Company) => {
+    setCompanies(prev => [...prev, newCompany]);
+    addNotification(
+      'ADMIN_SYSTEM_ID',
+      '🆕 شركة تشطيبات جديدة تريد الانضمام • New Service Partner Registration',
+      `سجلت شركة (${newCompany.companyName}) في المنصة بانتظار المراجعة والاعتماد والمباشرة. • Registered: ${newCompany.companyName}. Pending Board Review.`,
+      newCompany.id
+    );
+    showToast(
+      lang === 'en'
+        ? '🏢 Registration request sent to the administration!'
+        : '🏢 تم تقديم طلب الانضمام بنجاح! جاري فحصه واعتماده من قبل الإدارة لتفعيل الحساب.'
     );
   };
 
@@ -1734,75 +1739,35 @@ export default function App() {
     setCompanies(prev =>
       prev.map(c => (c.id === id ? { ...c, status: 'APPROVED' } : c))
     );
-    showToast('🏢 تم ترخيص واعتماد شركة التشطيبات وتفعيل قدرتها على المنافسة والمطابقة.');
-
-    const comp = companies.find(c => c.id === id);
-    if (comp) {
-      addNotification(
-        comp.userId,
-        '🎉 تهانينا! تم تفعيل حسابك كشركة معتمدة • Partner Account Approved',
-        `أهلاً بك شريكاً رسمياً في شطبها! تم اعتماد مستندات شركة (${comp.companyName}) بنجاح ويمكنك الآن تقديم عروض الأسعار والبدء في التقديم الفوري للمناقصات. • Verified! Your contractor account (${comp.companyName}) is active on Shattabha.`,
-        comp.id
-      );
-    }
-  };
-
-  const handleToggleVerifyCompany = (id: string) => {
-    setCompanies(prev =>
-      prev.map(c => {
-        if (c.id === id) {
-          const newStatus = !c.isVerified;
-          return { ...c, isVerified: newStatus };
-        }
-        return c;
-      })
+    showToast(
+      lang === 'en'
+        ? '🏢 Company approved and registered successfully!'
+        : '🏢 تم ترخيص واعتماد شركة التشطيبات وتفعيل قدرتها على المنافسة والمطابقة!'
     );
-    showToast('🛡️ تم تعديل حالة توثيق الشركة وشارتها الزرقاء بنجاح!');
   };
 
-  const handleUpdateCompanyRating = (id: string, num: number) => {
-    setCompanies(prev =>
-      prev.map(c => {
-        if (c.id === id) {
-          return { ...c, rating: num };
-        }
-        return c;
-      })
-    );
-    showToast('⭐ تم تحديث تقييم شركة التشطيب بالمستويات الجديدة بنجاح!');
-  };
-
-  // ADMIN TRIGGERS: Save co-signature meeting contract coordination
+  // ADMIN TRIGGERS: Save or update project contracts (and seed execution stages)
   const handleSaveContract = (updatedContract: Contract, requestUpdates?: Partial<ClientRequest>) => {
-    // Save/Upsert contract
+    // 1. Save contract with updated fields in the contract pool
     setContracts(prev => {
-      const exists = prev.some(c => c.requestId === updatedContract.requestId);
+      const exists = prev.some(c => c.id === updatedContract.id);
       if (exists) {
-        return prev.map(c => (c.requestId === updatedContract.requestId ? updatedContract : c));
-      } else {
-        return [updatedContract, ...prev];
+        return prev.map(c => (c.id === updatedContract.id ? updatedContract : c));
       }
+      return [updatedContract, ...prev];
     });
 
-    // Update related request status
-    setRequests(prev =>
-      prev.map(r =>
-        r.id === updatedContract.requestId
-          ? {
-              ...r,
-              status: updatedContract.isSigned ? 'CONTRACT_SIGNED' : 'COORDINATION',
-              ...requestUpdates
-            }
-          : r
-      )
-    );
+    // 2. Cascade request status updates
+    if (requestUpdates) {
+      setRequests(prev =>
+        prev.map(r => (r.id === updatedContract.requestId ? { ...r, ...requestUpdates } : r))
+      );
+    }
 
-    // If signed, automatically generate default stages for the project if not present
-    if (updatedContract.isSigned) {
-      const currentReq = requests.find(r => r.id === updatedContract.requestId);
-      const isSupervised = requestUpdates?.requireInspector !== false && currentReq?.requireInspector !== false;
+    const currentReq = requests.find(r => r.id === updatedContract.requestId);
+    const isSupervised = requestUpdates?.requireInspector !== false && currentReq?.requireInspector !== false;
 
-      setStages(prev => {
+setStages(prev => {
         const exists = prev.some(s => s.requestId === updatedContract.requestId);
         if (exists) {
           // Update percentages of existing stages to match any updated contract percentages
@@ -1922,7 +1887,6 @@ export default function App() {
           }
         ];
       });
-    }
 
     showToast(
       lang === 'en'

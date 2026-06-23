@@ -67,8 +67,13 @@ export const ClientDashboardView: React.FC<ClientDashboardViewProps> = ({
   onUpdateRequest
 }) => {
   const isEn = lang === 'en';
+  // We set clientEmail from local storage.
+  const clientEmailLocal = localStorage.getItem('shattabba_client_email') || 'ahmed.rashidy@gmail.com';
+  
   // We keep track of the selected request. Default to the first one PENDING or RECEIVED.
-  const clientRequests = requests.filter(r => r.clientId === 'ID#4092' || r.clientId === 'CLIENT-1' || r.clientId.startsWith('ID#') || r.id.startsWith('REQ'));
+  const clientRequests = requests.filter(r => r.clientEmail === clientEmailLocal ||
+    (clientEmailLocal === 'ahmed.rashidy@gmail.com' && (r.clientId === 'ID#4092' || r.clientId === 'CLIENT-1'))
+  );
   const defaultSelectedId = clientRequests[0]?.id || 'REQ-001';
   const [selectedRequestId, setSelectedRequestId] = useState<string>(defaultSelectedId);
 
@@ -2256,7 +2261,25 @@ export const ClientDashboardView: React.FC<ClientDashboardViewProps> = ({
                   </div>
                 </div>
               );
-            })() : selectedRequest ? (
+            })() : clientRequests.length === 0 ? (
+              <div className="bg-white rounded-3xl border border-gray-150 py-16 px-6 text-center text-gray-500 shadow-sm mt-8">
+                <div className="text-6xl mb-4">🏠</div>
+                <h3 className="text-xl font-extrabold text-[#232F3F] mb-3">
+                  {isEn ? 'Welcome to your Dashboard' : 'مرحباً بك في لوحة تحكم مشاريعك'}
+                </h3>
+                <p className="text-xs max-w-md mx-auto mb-8 leading-relaxed">
+                  {isEn 
+                    ? 'You do not have any active finishing projects yet. Start by creating a new request and letting Shattabha manage the bidding and execution.' 
+                    : 'لا يوجد لديك طلبات تشطيب مسجلة حتى الآن. ابدأ بإضافة مشروعك الأول لنطرحه للمناقصة ونصلك بأفضل الشركات المعتمدة.'}
+                </p>
+                <button 
+                  onClick={() => setIsMapPickingVisible(true)}
+                  className="bg-[#2B4D89] text-white px-8 py-3.5 rounded-xl font-bold hover:bg-[#1E3A8A] transition-colors shadow-md text-sm cursor-pointer"
+                >
+                  {isEn ? '+ Start New Request' : '+ أضف مشروعك الأول وابدأ الآن'}
+                </button>
+              </div>
+            ) : selectedRequest ? (
               <div className="space-y-6">
                 
                 {/* 🛠️ DEMO TESTING BAR: SIMULATE ANY OF THE 11 LIFE-CYCLE STATUSES */}
