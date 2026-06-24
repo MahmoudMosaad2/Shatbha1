@@ -1102,8 +1102,8 @@ export const FinishingPackagesAndCalculator: React.FC<FinishingPackagesAndCalcul
               {/* Area Range Slider */}
               <div className="space-y-3">
                 <div className="flex justify-between items-center text-xs font-black">
-                  <span className="text-[#D8B448] font-mono text-sm sm:text-base">{calcArea} {isEn ? 'sqm' : 'متر مربع'}</span>
                   <span className="text-gray-200">{isEn ? 'Built Area Measure:' : 'المساحة الإجمالية لوحدتك:'}</span>
+                  <span className="text-[#D8B448] font-mono text-sm sm:text-base">{calcArea} {isEn ? 'sqm' : 'متر مربع'}</span>
                 </div>
 
                 <input 
@@ -1117,9 +1117,9 @@ export const FinishingPackagesAndCalculator: React.FC<FinishingPackagesAndCalcul
                 />
 
                 <div className="flex justify-between text-[10px] text-gray-400 font-bold">
-                  <span>٥٠٠ م²</span>
-                  <span>٢٥٠ م²</span>
-                  <span>٥٠ م²</span>
+                  <span>{isEn ? '50 sqm' : '٥٠ م²'}</span>
+                  <span>{isEn ? '250 sqm' : '٢٥٠ م²'}</span>
+                  <span>{isEn ? '500 sqm' : '٥٠٠ م²'}</span>
                 </div>
               </div>
 

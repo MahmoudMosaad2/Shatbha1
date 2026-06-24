@@ -2756,16 +2756,26 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
             </p>
           </div>
         </div>
-        <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white focus:outline-hidden cursor-pointer"
-        >
-          {isMobileMenuOpen ? (
-            <X className="w-5 h-5" />
-          ) : (
-            <Menu className="w-5 h-5" />
+        <div className="flex items-center gap-2">
+          {onSignOut && (
+            <button
+              onClick={onSignOut}
+              className="p-1.5 rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/30 text-xs font-bold transition-all"
+            >
+              🚪
+            </button>
           )}
-        </button>
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white focus:outline-hidden cursor-pointer"
+          >
+            {isMobileMenuOpen ? (
+              <X className="w-5 h-5" />
+            ) : (
+              <Menu className="w-5 h-5" />
+            )}
+          </button>
+        </div>
       </div>
 
       {/* SIDEBAR FOR DESKTOP & MOBILE */}
@@ -2904,6 +2914,15 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                 ? "Role: Administrator Manager"
                 : "الصلاحية: مدير المنصة العام"}
             </div>
+            {onSignOut && (
+              <button
+                onClick={onSignOut}
+                className="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-4 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5"
+              >
+                <span>🚪</span>
+                {isEn ? "Sign Out" : "تسجيل الخروج"}
+              </button>
+            )}
           </div>
         </div>
 
