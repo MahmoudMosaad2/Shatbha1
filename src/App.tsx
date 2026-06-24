@@ -6,7 +6,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ShieldCheck, FileText, ArrowRight, ArrowLeft, CheckCircle, Sparkles, MessageSquare, Send, X, ChevronDown } from 'lucide-react';
-import { PresentationToolbar } from './components/PresentationToolbar';
 import { PublicHomeView } from './components/PublicHomeView';
 import { ClientDashboardView } from './components/ClientDashboardView';
 import { CompanyDashboardView } from './components/CompanyDashboardView';
@@ -174,27 +173,27 @@ export default function App() {
 
   // Core Reactive States with robust existence check
   const [requests, setRequests] = useState<ClientRequest[]>(() => {
-    const loaded = loadStoredData('shatibha_requests', initialRequests) as ClientRequest[];
+    const loaded = loadStoredData('shatibha_requests_v4', initialRequests) as ClientRequest[];
     // Clean up any previously auto-generated mock requests to fix the bug where users see requests they didn't create
     return loaded.filter(r => r.notes !== 'طلب تشطيب جديد مضاف تلقائياً لحسابك المفعّل فور تسجيلك بموقع شطبها.');
   });
-  const [companies, setCompanies] = useState<Company[]>(() => loadStoredData('shatibha_companies', initialCompanies));
-  const [offers, setOffers] = useState<Offer[]>(() => loadStoredData('shatibha_offers', initialOffers));
-  const [contracts, setContracts] = useState<Contract[]>(() => loadStoredData('shatibha_contracts', initialContracts));
-  const [inspectors, setInspectors] = useState<Inspector[]>(() => loadStoredData('shatibha_inspectors', initialInspectors));
-  const [stages, setStages] = useState<ProjectStage[]>(() => loadStoredData('shatibha_stages', initialProjectStages));
-  const [notifications, setNotifications] = useState<Notification[]>(() => loadStoredData('shatibha_notifications', initialNotifications));
-  const [promoCodes, setPromoCodes] = useState<PromoCode[]>(() => loadStoredData('shatibha_promo_codes', initialPromoCodes));
+  const [companies, setCompanies] = useState<Company[]>(() => loadStoredData('shatibha_companies_v4', initialCompanies));
+  const [offers, setOffers] = useState<Offer[]>(() => loadStoredData('shatibha_offers_v4', initialOffers));
+  const [contracts, setContracts] = useState<Contract[]>(() => loadStoredData('shatibha_contracts_v4', initialContracts));
+  const [inspectors, setInspectors] = useState<Inspector[]>(() => loadStoredData('shatibha_inspectors_v4', initialInspectors));
+  const [stages, setStages] = useState<ProjectStage[]>(() => loadStoredData('shatibha_stages_v4', initialProjectStages));
+  const [notifications, setNotifications] = useState<Notification[]>(() => loadStoredData('shatibha_notifications_v4', initialNotifications));
+  const [promoCodes, setPromoCodes] = useState<PromoCode[]>(() => loadStoredData('shatibha_promo_codes_v4', initialPromoCodes));
 
   // Expanded workflows & persistence states
-  const [warranties, setWarranties] = useState<WarrantyRecord[]>(() => loadStoredData('shatibha_warranties', initialWarrantyRecords));
-  const [complaints, setComplaints] = useState<WarrantyComplaint[]>(() => loadStoredData('shatibha_complaints', initialWarrantyComplaints));
-  const [auditLogs, setAuditLogs] = useState<AuditLog[]>(() => loadStoredData('shatibha_audit_logs', initialAuditLogs));
+  const [warranties, setWarranties] = useState<WarrantyRecord[]>(() => loadStoredData('shatibha_warranties_v4', initialWarrantyRecords));
+  const [complaints, setComplaints] = useState<WarrantyComplaint[]>(() => loadStoredData('shatibha_complaints_v4', initialWarrantyComplaints));
+  const [auditLogs, setAuditLogs] = useState<AuditLog[]>(() => loadStoredData('shatibha_audit_logs_v4', initialAuditLogs));
 
   // --- EMAIL NOTIFICATION SIMULATION STATES ---
   const [simulatedEmails, setSimulatedEmails] = useState<any[]>(() => {
     try {
-      const saved = localStorage.getItem('shatibha_simulated_emails');
+      const saved = localStorage.getItem('shatibha_simulated_emails_v4');
       return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
@@ -348,7 +347,7 @@ export default function App() {
     setRequests(prev => {
       const updated = [newReq, ...prev];
       try {
-        localStorage.setItem('shatibha_requests', JSON.stringify(updated));
+        localStorage.setItem('shatibha_requests_v4', JSON.stringify(updated));
       } catch (e) {
         console.error(e);
       }
@@ -368,7 +367,7 @@ export default function App() {
     setNotifications(prev => {
       const updated = [newNotif, ...prev];
       try {
-        localStorage.setItem('shatibha_notifications', JSON.stringify(updated));
+        localStorage.setItem('shatibha_notifications_v4', JSON.stringify(updated));
       } catch (e) {
         console.error(e);
       }
@@ -612,7 +611,7 @@ export default function App() {
 
   useEffect(() => {
     try {
-      localStorage.setItem('shatibha_requests', JSON.stringify(requests));
+      localStorage.setItem('shatibha_requests_v4', JSON.stringify(requests));
     } catch (e) {
       console.error(e);
     }
@@ -620,7 +619,7 @@ export default function App() {
 
   useEffect(() => {
     try {
-      localStorage.setItem('shatibha_companies', JSON.stringify(companies));
+      localStorage.setItem('shatibha_companies_v4', JSON.stringify(companies));
     } catch (e) {
       console.error(e);
     }
@@ -628,7 +627,7 @@ export default function App() {
 
   useEffect(() => {
     try {
-      localStorage.setItem('shatibha_offers', JSON.stringify(offers));
+      localStorage.setItem('shatibha_offers_v4', JSON.stringify(offers));
     } catch (e) {
       console.error(e);
     }
@@ -636,7 +635,7 @@ export default function App() {
 
   useEffect(() => {
     try {
-      localStorage.setItem('shatibha_contracts', JSON.stringify(contracts));
+      localStorage.setItem('shatibha_contracts_v4', JSON.stringify(contracts));
     } catch (e) {
       console.error(e);
     }
@@ -644,7 +643,7 @@ export default function App() {
 
   useEffect(() => {
     try {
-      localStorage.setItem('shatibha_inspectors', JSON.stringify(inspectors));
+      localStorage.setItem('shatibha_inspectors_v4', JSON.stringify(inspectors));
     } catch (e) {
       console.error(e);
     }
@@ -652,7 +651,7 @@ export default function App() {
 
   useEffect(() => {
     try {
-      localStorage.setItem('shatibha_stages', JSON.stringify(stages));
+      localStorage.setItem('shatibha_stages_v4', JSON.stringify(stages));
     } catch (e) {
       console.error(e);
     }
@@ -660,7 +659,7 @@ export default function App() {
 
   useEffect(() => {
     try {
-      localStorage.setItem('shatibha_notifications', JSON.stringify(notifications));
+      localStorage.setItem('shatibha_notifications_v4', JSON.stringify(notifications));
     } catch (e) {
       console.error(e);
     }
@@ -668,7 +667,7 @@ export default function App() {
 
   useEffect(() => {
     try {
-      localStorage.setItem('shatibha_promo_codes', JSON.stringify(promoCodes));
+      localStorage.setItem('shatibha_promo_codes_v4', JSON.stringify(promoCodes));
     } catch (e) {
       console.error(e);
     }
@@ -676,7 +675,7 @@ export default function App() {
 
   useEffect(() => {
     try {
-      localStorage.setItem('shatibha_warranties', JSON.stringify(warranties));
+      localStorage.setItem('shatibha_warranties_v4', JSON.stringify(warranties));
     } catch (e) {
       console.error(e);
     }
@@ -684,7 +683,7 @@ export default function App() {
 
   useEffect(() => {
     try {
-      localStorage.setItem('shatibha_complaints', JSON.stringify(complaints));
+      localStorage.setItem('shatibha_complaints_v4', JSON.stringify(complaints));
     } catch (e) {
       console.error(e);
     }
@@ -692,7 +691,7 @@ export default function App() {
 
   useEffect(() => {
     try {
-      localStorage.setItem('shatibha_audit_logs', JSON.stringify(auditLogs));
+      localStorage.setItem('shatibha_audit_logs_v4', JSON.stringify(auditLogs));
     } catch (e) {
       console.error(e);
     }
@@ -903,7 +902,7 @@ export default function App() {
     setSimulatedEmails(prev => {
       const updated = [newMail, ...prev];
       try {
-        localStorage.setItem('shatibha_simulated_emails', JSON.stringify(updated));
+        localStorage.setItem('shatibha_simulated_emails_v4', JSON.stringify(updated));
       } catch (err) {
         console.error(err);
       }
@@ -2041,27 +2040,6 @@ setStages(prev => {
       {/* Dynamic Push Notifications Toaster with sound feedback */}
       <PushNotificationToaster notifications={notifications} lang={lang} />
 
-      {/* 1. PRESENTATION PRESENTATION SWITCHER (Pinned at very top) */}
-      {isAdminSession && (
-        <PresentationToolbar
-          activeView={activeView === 'CLIENT_TERMS' || activeView === 'COMPANY_TERMS' ? 'HOME' : activeView}
-          setActiveView={setActiveView}
-          resetState={handleResetState}
-          clearAllRequests={handleClearAllRequests}
-          requestsCount={requests.length}
-          offersCount={offers.length}
-          lang={lang}
-          setLang={setLang}
-          notifications={notifications}
-          onMarkRead={handleMarkNotificationAsRead}
-          onMarkAllAsRead={handleMarkAllNotificationsAsRead}
-          onDeleteNotification={handleDeleteNotification}
-          onSimulatePush={handleSimulatePush}
-          darkMode={darkMode}
-          setDarkMode={setDarkMode}
-        />
-      )}
-
       {/* Demo Notification / Toast */}
       {toastMessage && (
         <div className="bg-[#D8B448] text-[#2B4D89] px-4 py-2 text-center text-xs font-bold leading-relaxed shadow border-b border-white/20 relative z-[1000] flex items-center justify-center gap-2">
@@ -2204,6 +2182,7 @@ setStages(prev => {
             onUpdateInspectorsList={handleUpdateInspectorsList}
             onUpdateCompaniesList={setCompanies}
             lang={lang}
+            setLang={setLang}
             onToggleVerifyCompany={handleToggleVerifyCompany}
             onUpdateCompanyRating={handleUpdateCompanyRating}
             onUpdateStage={handleUpdateStage}

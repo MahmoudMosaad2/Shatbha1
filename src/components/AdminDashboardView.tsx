@@ -85,6 +85,7 @@ interface AdminDashboardViewProps {
   stages: ProjectStage[];
   onUpdateProjectInspector: (requestId: string, inspectorId: string, reason?: string) => void;
   lang: Language;
+  setLang?: (lang: Language) => void;
   onToggleVerifyCompany?: (id: string) => void;
   onUpdateCompanyRating?: (id: string, rating: number) => void;
   onUpdateInspectorRating?: (
@@ -578,6 +579,7 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
   stages,
   onUpdateProjectInspector,
   lang,
+  setLang,
   onToggleVerifyCompany,
   onUpdateCompanyRating,
   onUpdateInspectorRating,
@@ -900,68 +902,6 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const [notifFilter, setNotifFilter] = useState<"ALL" | "COMPLAINTS" | "REGISTRATIONS">("ALL");
-
-  // Seeding initial notifications for presentation if empty
-  useEffect(() => {
-    if ((!notifications || notifications.length === 0) && onUpdateNotifications) {
-      const demoNotifs = [
-        {
-          id: "notif_demo_complaint_1",
-          userId: "ADMIN",
-          title: "🚨 بلاغ فني: شكوى تسريب مياه في الدهانات الداخلية • Wet paint leakage complaint",
-          message: "تقدم العميل أحمد بشكوى فنية عاجلة بخصوص وجود رطوبة مرتفعة وتشققات في طبقة الدهان الجداري بالمشروع رقم PRJ-771.",
-          isRead: false,
-          createdAt: new Date(Date.now() - 3600000 * 2).toISOString(),
-          requestId: "PRJ-771"
-        },
-        {
-          id: "notif_demo_registration_1",
-          userId: "ADMIN",
-          title: "🏢 تسجيل جديد: شركة أرابيسك للتصميم والمقاولات تقدمت بطلب اعتماد • Arabesque design registration",
-          message: "سجلت شركة مقاولات جديدة في الجيزة باسم 'أرابيسك ديزاين' ورفعت السجل التجاري والبطاقة الضريبية وتحتاج لمراجعة الأوراق والاعتماد الفوري.",
-          isRead: false,
-          createdAt: new Date(Date.now() - 3600000 * 5).toISOString(),
-        },
-        {
-          id: "notif_demo_complaint_2",
-          userId: "ADMIN",
-          title: "🚨 نزاع هندسي: خلل في كود السباكة وتأسيس التغذية بالحمامات • Plumbing piping alignment dispute",
-          message: "أفاد المنفذ م/ كريم بوجود شكوى فنية حول تركيب خلاطات مخفية مغايرة لكود التصميم المطلوب ومخالفة للمواصفات بدون إذن كتابي.",
-          isRead: true,
-          createdAt: new Date(Date.now() - 3600000 * 12).toISOString(),
-          requestId: "PRJ-802"
-        },
-        {
-          id: "notif_demo_registration_2",
-          userId: "ADMIN",
-          title: "👤 تسجيل جديد: انضمام المهندس الاستشاري م/ أحمد سليمان • Inspector Ahmed Soliman joined",
-          message: "قام المهندس أحمد سليمان بالتسجيل كمشرف ميداني معتمد في منطقة القاهرة الجديدة، وتم ملء استمارة المحاكاة والخبرات الميدانية بنجاح.",
-          isRead: false,
-          createdAt: new Date(Date.now() - 3600000 * 24).toISOString(),
-        },
-        {
-          id: "notif_demo_registration_3",
-          userId: "ADMIN",
-          title: "🏢 تسجيل جديد: شركة العاصمة للمقاولات العامة والتشطيبات • El-Assema Contracting registration",
-          message: "تقدمت شركة العاصمة بطلب الانضمام كشركة معتمدة بخصم ترويجي وبدأت برفع شهادات الخبرة وسابق الأعمال للمراجعة الإدارية.",
-          isRead: true,
-          createdAt: new Date(Date.now() - 3600000 * 36).toISOString(),
-        },
-        {
-          id: "notif_demo_complaint_3",
-          userId: "ADMIN",
-          title: "🚨 بلاغ جودة: وجود عيوب في منسوب سيراميك الأرضيات بالصالة • Living room ceramic unlevelness complaint",
-          message: "بلاغ فني فوري من العميل بخصوص فروق تمديد فواصل السيراميك وميول غير نظامية في صالة الاستقبال الكبرى بمشروع الشقة السكنية.",
-          isRead: false,
-          createdAt: new Date(Date.now() - 3600000 * 48).toISOString(),
-          requestId: "PRJ-903"
-        }
-      ];
-      setTimeout(() => {
-        onUpdateNotifications(demoNotifs);
-      }, 0);
-    }
-  }, [notifications?.length, onUpdateNotifications]);
 
   // 🎫 Promo code form states
   const [newCodeName, setNewCodeName] = useState("");
@@ -2757,6 +2697,14 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
           </div>
         </div>
         <div className="flex items-center gap-2">
+          {setLang && (
+            <button
+              onClick={() => setLang(isEn ? 'ar' : 'en')}
+              className="p-1.5 rounded-lg bg-[#D8B448]/10 text-[#D8B448] border border-[#D8B448]/30 text-[10px] font-bold transition-all px-2 uppercase"
+            >
+              {isEn ? 'عربي' : 'EN'}
+            </button>
+          )}
           {onSignOut && (
             <button
               onClick={onSignOut}
@@ -2909,6 +2857,15 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
             </p>
           </div>
           <div className="flex items-center gap-2.5">
+            {setLang && (
+              <button
+                onClick={() => setLang(isEn ? 'ar' : 'en')}
+                className="bg-[#D8B448]/10 hover:bg-[#D8B448]/20 text-[#D8B448] border border-[#D8B448]/30 px-4 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 uppercase"
+              >
+                <span>🌍</span>
+                {isEn ? 'عربي' : 'English'}
+              </button>
+            )}
             <div className="bg-[#151D2A]/60 px-3.5 py-1.5 rounded-full border border-gray-700 text-xs font-bold text-[#D8B448]">
               {isEn
                 ? "Role: Administrator Manager"
