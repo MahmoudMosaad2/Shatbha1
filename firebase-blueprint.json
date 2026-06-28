@@ -1,0 +1,136 @@
+{
+  "entities": {
+    "ClientRequest": {
+      "title": "ClientRequest",
+      "description": "Represents a finishing request submitted by a client",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "clientId": { "type": "string" },
+        "clientName": { "type": "string" },
+        "clientPhone": { "type": "string" },
+        "clientEmail": { "type": "string" },
+        "unitType": { "type": "string" },
+        "area": { "type": "number" },
+        "governorate": { "type": "string" },
+        "city": { "type": "string" },
+        "finishingLevel": { "type": "string" },
+        "budget": { "type": "number" },
+        "notes": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "clientId", "clientName", "clientEmail", "status", "createdAt"]
+    },
+    "Company": {
+      "title": "Company",
+      "description": "Represents a registered contracting company",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "companyName": { "type": "string" },
+        "governorates": { "type": "array" },
+        "rating": { "type": "number" },
+        "status": { "type": "string" }
+      },
+      "required": ["id", "companyName", "status"]
+    },
+    "Offer": {
+      "title": "Offer",
+      "description": "An offer submitted by a company for a finishing request",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "requestId": { "type": "string" },
+        "companyId": { "type": "string" },
+        "price": { "type": "number" },
+        "durationDays": { "type": "number" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "requestId", "companyId", "price"]
+    },
+    "Contract": {
+      "title": "Contract",
+      "description": "A binding contract between client, company, and platform",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "requestId": { "type": "string" },
+        "companyId": { "type": "string" },
+        "totalAmount": { "type": "number" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "requestId", "companyId", "totalAmount"]
+    },
+    "Inspector": {
+      "title": "Inspector",
+      "description": "A field inspector registered with the platform",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "governorate": { "type": "string" },
+        "status": { "type": "string" }
+      },
+      "required": ["id", "name", "governorate"]
+    },
+    "ProjectStage": {
+      "title": "ProjectStage",
+      "description": "A stage of execution for a finishing project",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "requestId": { "type": "string" },
+        "name": { "type": "string" },
+        "status": { "type": "string" },
+        "progress": { "type": "number" }
+      },
+      "required": ["id", "requestId", "name", "status", "progress"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "A platform notification for a user",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "isRead": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "userId", "title", "message", "isRead", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/requests/{requestId}": {
+      "schema": "ClientRequest",
+      "description": "Client finishing requests"
+    },
+    "/companies/{companyId}": {
+      "schema": "Company",
+      "description": "Contracting companies"
+    },
+    "/offers/{offerId}": {
+      "schema": "Offer",
+      "description": "Finishing offers"
+    },
+    "/contracts/{contractId}": {
+      "schema": "Contract",
+      "description": "Tripartite contracts"
+    },
+    "/inspectors/{inspectorId}": {
+      "schema": "Inspector",
+      "description": "Registered inspectors"
+    },
+    "/stages/{stageId}": {
+      "schema": "ProjectStage",
+      "description": "Project execution stages"
+    },
+    "/notifications/{notificationId}": {
+      "schema": "Notification",
+      "description": "App notifications"
+    }
+  }
+}

@@ -21,6 +21,9 @@ import { AdminLoginView } from './components/AdminLoginView';
 import { initialRequests, initialCompanies, initialOffers, initialContracts, initialInspectors, initialProjectStages, initialNotifications, initialPromoCodes, initialWarrantyRecords, initialWarrantyComplaints, initialAuditLogs } from './data';
 import { ClientRequest, Company, Offer, Contract, Inspector, ProjectStage, Notification, PromoCode, WarrantyRecord, WarrantyComplaint, AuditLog } from './types';
 import { Language, getTranslation } from './lib/translations';
+import { auth } from './lib/firebaseAuth';
+import { onAuthStateChanged } from 'firebase/auth';
+import { loadCollectionFromFirestore, saveDocumentToFirestore } from './lib/firestoreSync';
 
 // --- INTUITIVE TWIN-LANGUAGE CONTEXT-AWARE PREDICTIVE DICTIONARY FOR CONSTRUCTIVE CONTEXTS ---
 const autocompleteData = [
@@ -221,6 +224,125 @@ export default function App() {
   ]);
   const [assistantInput, setAssistantInput] = useState('');
   const [assistantLoading, setAssistantLoading] = useState(false);
+
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setCurrentUser(user);
+      if (user) {
+        try {
+          const fsRequests = await loadCollectionFromFirestore<ClientRequest>('requests');
+          const fsCompanies = await loadCollectionFromFirestore<Company>('companies');
+          const fsOffers = await loadCollectionFromFirestore<Offer>('offers');
+          const fsContracts = await loadCollectionFromFirestore<Contract>('contracts');
+          const fsInspectors = await loadCollectionFromFirestore<Inspector>('inspectors');
+          const fsStages = await loadCollectionFromFirestore<ProjectStage>('stages');
+          const fsNotifications = await loadCollectionFromFirestore<Notification>('notifications');
+          const fsPromoCodes = await loadCollectionFromFirestore<PromoCode>('promoCodes');
+          const fsWarranties = await loadCollectionFromFirestore<WarrantyRecord>('warranties');
+          const fsComplaints = await loadCollectionFromFirestore<WarrantyComplaint>('complaints');
+          const fsAuditLogs = await loadCollectionFromFirestore<AuditLog>('auditLogs');
+
+          if (fsRequests.length > 0) setRequests(fsRequests);
+          if (fsCompanies.length > 0) setCompanies(fsCompanies);
+          if (fsOffers.length > 0) setOffers(fsOffers);
+          if (fsContracts.length > 0) setContracts(fsContracts);
+          if (fsInspectors.length > 0) setInspectors(fsInspectors);
+          if (fsStages.length > 0) setStages(fsStages);
+          if (fsNotifications.length > 0) setNotifications(fsNotifications);
+          if (fsPromoCodes.length > 0) setPromoCodes(fsPromoCodes);
+          if (fsWarranties.length > 0) setWarranties(fsWarranties);
+          if (fsComplaints.length > 0) setComplaints(fsComplaints);
+          if (fsAuditLogs.length > 0) setAuditLogs(fsAuditLogs);
+        } catch (err) {
+          console.error('Error loading database from Firestore:', err);
+        }
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  // Save changes to Firestore in real time
+  useEffect(() => {
+    if (currentUser && requests.length > 0) {
+      requests.forEach(req => {
+        saveDocumentToFirestore('requests', req.id, req).catch(console.error);
+      });
+    }
+  }, [requests, currentUser]);
+
+  useEffect(() => {
+    if (currentUser && companies.length > 0) {
+      companies.forEach(company => {
+        saveDocumentToFirestore('companies', company.id, company).catch(console.error);
+      });
+    }
+  }, [companies, currentUser]);
+
+  useEffect(() => {
+    if (currentUser && offers.length > 0) {
+      offers.forEach(offer => {
+        saveDocumentToFirestore('offers', offer.id, offer).catch(console.error);
+      });
+    }
+  }, [offers, currentUser]);
+
+  useEffect(() => {
+    if (currentUser && contracts.length > 0) {
+      contracts.forEach(contract => {
+        saveDocumentToFirestore('contracts', contract.id, contract).catch(console.error);
+      });
+    }
+  }, [contracts, currentUser]);
+
+  useEffect(() => {
+    if (currentUser && inspectors.length > 0) {
+      inspectors.forEach(inspector => {
+        saveDocumentToFirestore('inspectors', inspector.id, inspector).catch(console.error);
+      });
+    }
+  }, [inspectors, currentUser]);
+
+  useEffect(() => {
+    if (currentUser && stages.length > 0) {
+      stages.forEach(stage => {
+        saveDocumentToFirestore('stages', stage.id, stage).catch(console.error);
+      });
+    }
+  }, [stages, currentUser]);
+
+  useEffect(() => {
+    if (currentUser && notifications.length > 0) {
+      notifications.forEach(notif => {
+        saveDocumentToFirestore('notifications', notif.id, notif).catch(console.error);
+      });
+    }
+  }, [notifications, currentUser]);
+
+  useEffect(() => {
+    if (currentUser && warranties.length > 0) {
+      warranties.forEach(war => {
+        saveDocumentToFirestore('warranties', war.id, war).catch(console.error);
+      });
+    }
+  }, [warranties, currentUser]);
+
+  useEffect(() => {
+    if (currentUser && complaints.length > 0) {
+      complaints.forEach(comp => {
+        saveDocumentToFirestore('complaints', comp.id, comp).catch(console.error);
+      });
+    }
+  }, [complaints, currentUser]);
+
+  useEffect(() => {
+    if (currentUser && auditLogs.length > 0) {
+      auditLogs.forEach(log => {
+        saveDocumentToFirestore('auditLogs', log.id, log).catch(console.error);
+      });
+    }
+  }, [auditLogs, currentUser]);
 
   // Derive active prediction from input context
   const getActivePrediction = () => {

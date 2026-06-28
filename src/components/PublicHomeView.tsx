@@ -26,6 +26,8 @@ import {
   Phone,
   HelpCircle,
   Building,
+  Home,
+  Paintbrush,
   ArrowLeftRight,
   Mail,
   ChevronLeft,
@@ -41,7 +43,7 @@ import { Company, ClientRequest } from '../types';
 import { Language, getTranslation } from '../lib/translations';
 import { ShattabhaLogo } from './ShattabhaLogo';
 import { motion, AnimatePresence } from 'motion/react';
-import { socialSignIn } from '../lib/firebaseAuth';
+import { socialSignIn, signUpWithEmail, signInWithEmail, getUserProfile } from '../lib/firebaseAuth';
 import { 
   HOME_DEFAULT_SLIDES as RAW_HOME_DEFAULT_SLIDES, 
   HOME_COMPARISON as RAW_HOME_COMPARISON, 
@@ -105,6 +107,7 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
   // Interactive Slider
   const [showAfter, setShowAfter] = useState<boolean>(true);
   const [slideIndex, setSlideIndex] = useState(0);
+  const [mobileActiveSlide, setMobileActiveSlide] = useState(0);
 
   // Loaded slides list (backed by customizable CMS)
   const [slides, setSlides] = useState(() => {
@@ -415,26 +418,33 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
     }, 1200);
   };
 
-  const handleClientSubmit = (e: React.FormEvent) => {
+  const handleClientSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!clientName || !clientEmail || !clientPhone) return;
+    if (!clientName || !clientEmail || !clientPhone || !clientPassword) return;
     if (!clientAgree) {
       alert(isEn ? "Please accept the Terms and Conditions to complete registration." : "يرجى قبول الشروط والأحكام لإتمام التسجيل.");
       return;
     }
     
-    localStorage.setItem('shattabba_client_name', clientName);
-    localStorage.setItem('shattabba_client_email', clientEmail);
-    
-    onRegisterClient(clientName, clientEmail, clientPhone);
-    setIsClientSuccess(true);
-    setTimeout(() => {
-      setIsClientSuccess(false);
-      setModalType('NONE');
-      // Reset agreement state
-      setClientAgree(false);
-      onNavigateToDashboard('CLIENT');
-    }, 1200);
+    try {
+      await signUpWithEmail(clientEmail, clientPassword, clientName, clientPhone, 'CLIENT');
+      
+      localStorage.setItem('shattabba_client_name', clientName);
+      localStorage.setItem('shattabba_client_email', clientEmail);
+      
+      onRegisterClient(clientName, clientEmail, clientPhone);
+      setIsClientSuccess(true);
+      setTimeout(() => {
+        setIsClientSuccess(false);
+        setModalType('NONE');
+        // Reset agreement state
+        setClientAgree(false);
+        onNavigateToDashboard('CLIENT');
+      }, 1200);
+    } catch (error: any) {
+      console.error('Registration failed:', error);
+      alert(isEn ? `Registration failed: ${error.message}` : `فشل تسجيل الحساب: ${error.message}`);
+    }
   };
 
   const handleSocialRegister = async (provider: string) => {
@@ -595,10 +605,235 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
   ];
 
   return (
-    <div className={`${isEn ? 'text-left' : 'text-right'} font-sans antialiased bg-[#F4F6F9] min-h-screen pb-12 overflow-x-hidden`} style={{ direction: isEn ? 'ltr' : 'rtl' }}>
+    <div className={`${isEn ? 'text-left' : 'text-right'} font-sans antialiased min-h-screen overflow-x-hidden`} style={{ direction: isEn ? 'ltr' : 'rtl' }}>
       
-      {/* NAVBAR */}
-      <nav className="bg-white shadow-sm sticky top-0 left-0 right-0 z-50 px-4 sm:px-8 border-b border-gray-150">
+      {/* MOBILE IMMERSIVE LAYOUT (FIVERR-INSPIRED SHATBHA PREMIUM LOOK) */}
+      <div className="block md:hidden bg-[#0A162D] text-white min-h-screen flex flex-col justify-between overflow-x-hidden relative font-sans" style={{ direction: isEn ? 'ltr' : 'rtl' }}>
+        
+        {/* Background Image with elegant brand-themed overlay */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1080&auto=format&fit=crop&q=80" 
+            alt="Luxurious Modern Home Interior" 
+            className="w-full h-full object-cover opacity-20 filter contrast-125"
+            referrerPolicy="no-referrer"
+          />
+          {/* Shatbha signature royal navy blue gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0A162D]/60 via-[#0A162D]/95 to-[#050C18] z-0" />
+          {/* Subtle brand glow light effects */}
+          <div className="absolute top-[-10%] left-[-20%] w-[80%] h-[50%] rounded-full bg-[#2B4D89]/20 blur-3xl pointer-events-none" />
+          <div className="absolute bottom-[-10%] right-[-20%] w-[80%] h-[50%] rounded-full bg-[#D8B448]/5 blur-3xl pointer-events-none" />
+        </div>
+
+        {/* Header with Language switch */}
+        <div className="relative z-10 flex items-center justify-between px-6 pt-5">
+          {setLang && (
+            <button 
+              onClick={() => setLang(isEn ? 'ar' : 'en')}
+              className="bg-[#2B4D89]/20 backdrop-blur-md border border-[#2B4D89]/30 text-white p-1.5 px-3.5 rounded-full text-[11px] font-bold hover:bg-[#2B4D89]/40 transition-colors cursor-pointer"
+            >
+              {isEn ? 'العربية' : 'English'}
+            </button>
+          )}
+          
+          <div className="flex items-center gap-1.5">
+            <span className="text-[9.5px] text-[#D8B448] font-black tracking-wider uppercase">● {isEn ? 'SECURE ESCROW' : 'حساب ضمان آمن'}</span>
+          </div>
+        </div>
+
+        {/* Content Area */}
+        <div className="relative z-10 flex-1 flex flex-col justify-center py-5">
+          
+          {/* Shatbha Logo Card in the Center - Perfect Circle (132px x 132px) */}
+          <div 
+            onClick={() => onNavigateToDashboard('CLIENT')}
+            className="w-[132px] h-[132px] min-w-[132px] min-h-[132px] max-w-[132px] max-h-[132px] bg-white rounded-full shadow-[0_20px_50px_rgba(10,22,45,0.5)] flex flex-col items-center justify-center border border-white/20 active:scale-95 transition-all duration-300 cursor-pointer mx-auto relative z-10 shrink-0"
+          >
+            <ShattabhaLogo className="w-15 h-15" iconOnly={true} />
+            <div className="flex flex-col select-none items-center mt-0.5">
+              <span className="font-extrabold text-[15px] text-[#2B4D89] tracking-tight leading-none">شطبها</span>
+              <span className="text-[8px] text-[#2B4D89]/80 tracking-[0.22em] uppercase font-black mt-0.5 leading-none">SHATBHA</span>
+            </div>
+          </div>
+
+          {/* Slogan - Exactly 4 Words */}
+          <h1 className="text-2.5xl sm:text-3xl font-extrabold text-center text-white mt-5 leading-tight px-6">
+            {isEn ? (
+              <>
+                Shatbha... <span className="text-[#D8B448] font-black">Finishing with Safety.</span>
+              </>
+            ) : (
+              <>
+                شطبها... <span className="text-[#D8B448] font-black">تشطيب بأمان.</span>
+              </>
+            )}
+          </h1>
+
+          {/* Checklist Points (Ultra short) */}
+          <div className="flex flex-col gap-2.5 mx-auto max-w-xs mt-4" dir={isEn ? "ltr" : "rtl"}>
+            {[
+              { ar: "تخطيط هندسي دقيق.", en: "Precise engineering planning." },
+              { ar: "متابعة تنفيذ دورية.", en: "Regular execution follow-up." },
+              { ar: "ضمان استلام آمن.", en: "Secure reception guarantee." },
+              { ar: "توفير وقتك وجهدك.", en: "Saving your time & effort." }
+            ].map((item, idx) => (
+              <div key={idx} className="flex items-center gap-2.5 text-white/95 text-[14px] font-bold">
+                <CheckCircle className="w-[18px] h-[18px] text-[#D8B448] shrink-0" />
+                <span>{isEn ? item.en : item.ar}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Horizontally swiping Carousel (Middle features Section) */}
+          <div className="mt-6 w-full overflow-hidden">
+            <div 
+              className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none gap-3.5 px-6 py-2 w-full"
+              onScroll={(e) => {
+                const scrollLeft = e.currentTarget.scrollLeft;
+                const width = e.currentTarget.clientWidth;
+                if (width > 0) {
+                  const newIndex = Math.round(Math.abs(scrollLeft) / width);
+                  setMobileActiveSlide(newIndex);
+                }
+              }}
+              dir={isEn ? "ltr" : "rtl"}
+            >
+              {[
+                {
+                  titleAr: "تقارير فنية دقيقة",
+                  titleEn: "Accurate Site Audit Reports",
+                  descAr: "متابعة دورية خطوة بخطوة بالصور للتأكد من الجودة.",
+                  descEn: "Step-by-step follow-up with photos to ensure high quality.",
+                  icon: ClipboardList,
+                },
+                {
+                  titleAr: "ربط الدفعات بالاستلام",
+                  titleEn: "Escrow Linked to Approvals",
+                  descAr: "لا يتم صرف أي دفعة للمقاول إلا بعد الموافقة الفنية.",
+                  descEn: "No payment released without technical engineering approval.",
+                  icon: Lock,
+                },
+                {
+                  titleAr: "شركات معتمدة ومسجلة",
+                  titleEn: "Certified Registered Contractors",
+                  descAr: "نتحقق بدقة من السجل التجاري والبطاقة الضريبية لكل شركة.",
+                  descEn: "We verify commercial records and tax cards.",
+                  icon: ShieldCheck,
+                },
+                {
+                  titleAr: "وفر حتى 20% من التكاليف",
+                  titleEn: "Save up to 20% on Execution",
+                  descAr: "من خلال مناقصة شفافة وعروض تنافسية من مقاولين متعددين.",
+                  descEn: "Through transparent bidding and competitive contractor offers.",
+                  icon: Coins,
+                }
+              ].map((slide, idx) => (
+                <div 
+                  key={idx}
+                  className="snap-center shrink-0 w-[calc(100vw-3rem)] bg-white rounded-2xl p-4 flex items-center justify-between gap-3 shadow-xl transition-all duration-300 border border-slate-100"
+                  dir={isEn ? "ltr" : "rtl"}
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="p-2.5 rounded-xl bg-[#2B4D89]/5 border border-[#2B4D89]/10 shrink-0">
+                      <slide.icon className="w-5 h-5 text-[#2B4D89]" />
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="font-extrabold text-[#2B4D89] text-[13px] leading-tight">
+                        {isEn ? slide.titleEn : slide.titleAr}
+                      </h4>
+                      <p className="text-slate-500 text-[10px] mt-0.5 leading-normal font-medium truncate max-w-[170px] sm:max-w-xs">
+                        {isEn ? slide.descEn : slide.descAr}
+                      </p>
+                    </div>
+                  </div>
+                  <CheckCircle className="w-4.5 h-4.5 text-[#D8B448] shrink-0" />
+                </div>
+              ))}
+            </div>
+
+            {/* Slider Dots Indicator */}
+            <div className="flex justify-center gap-1.5 mt-2.5">
+              {[0, 1, 2, 3].map((idx) => (
+                <div 
+                  key={idx}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${mobileActiveSlide === idx ? 'w-5 bg-[#D8B448]' : 'w-1.5 bg-white/20'}`}
+                />
+              ))}
+            </div>
+          </div>
+
+        </div>
+
+        {/* STICKY/FIXED BOTTOM SECTION (FIVERR STYLE) */}
+        <div className="relative z-10 w-full px-6 pb-6 pt-2 mt-auto">
+          
+          {/* Action Buttons Grid - Side-by-Side (2 Columns) */}
+          <div className="grid grid-cols-2 gap-3.5 mb-5" dir={isEn ? "ltr" : "rtl"}>
+            
+            {/* Right Card in RTL: Company/Contractor with Paintbrush icon for decoration */}
+            <div 
+              onClick={() => setModalType('COMPANY')}
+              className="bg-[#12233F]/95 backdrop-blur-md active:scale-98 border border-[#2B4D89]/40 rounded-2xl p-4 flex flex-col items-center justify-between text-center min-h-[145px] cursor-pointer group hover:bg-[#182F54] hover:border-[#D8B448]/50 hover:shadow-[0_10px_25px_rgba(216,180,72,0.2)] transition-all duration-300 shadow-xl"
+            >
+              <div className="bg-[#2B4D89]/25 border border-[#2B4D89]/30 p-2.5 rounded-xl group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                <Paintbrush className="w-7 h-7 text-[#D8B448]" />
+              </div>
+              <div className="mt-2.5 flex flex-col items-center justify-center">
+                <h3 className="font-extrabold text-[12px] sm:text-[13px] text-white leading-tight">
+                  {isEn ? 'Register Company' : 'سجل شركتك كمقاول معتمد'}
+                </h3>
+                <p className="text-[8px] text-slate-300 mt-1 font-sans leading-none font-medium">
+                  {isEn ? "I'd like to offer my services" : 'أود تقديم خدماتي كمقاول'}
+                </p>
+              </div>
+            </div>
+
+            {/* Left Card in RTL: Client with Home icon */}
+            <div 
+              onClick={() => setModalType('CLIENT')}
+              className="bg-[#12233F]/95 backdrop-blur-md active:scale-98 border border-[#2B4D89]/40 rounded-2xl p-4 flex flex-col items-center justify-between text-center min-h-[145px] cursor-pointer group hover:bg-[#182F54] hover:border-[#2B4D89]/70 hover:shadow-[0_10px_25px_rgba(84,150,255,0.2)] transition-all duration-300 shadow-xl"
+            >
+              <div className="bg-[#2B4D89]/25 border border-[#2B4D89]/30 p-2.5 rounded-xl group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                <Home className="w-7 h-7 text-[#5496FF]" />
+              </div>
+              <div className="mt-2.5 flex flex-col items-center justify-center">
+                <h3 className="font-extrabold text-[12px] sm:text-[13px] text-white leading-tight">
+                  {isEn ? 'Request Finishing' : 'اطلب تشطيب عقارك الآن'}
+                </h3>
+                <p className="text-[8px] text-slate-300 mt-1 font-sans leading-none font-semibold">
+                  {isEn ? 'I\'m looking for professional renovation' : 'أبحث عن شركات ومقاولي تشطيب'}
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Under buttons: Skip on the right (RTL), Sign In on the left (RTL) */}
+          <div className="flex items-center justify-between px-2" dir={isEn ? "ltr" : "rtl"}>
+            <button 
+              onClick={() => onNavigateToDashboard('CLIENT')}
+              className="text-white/60 hover:text-[#D8B448] text-xs font-black underline underline-offset-4 cursor-pointer transition-colors"
+            >
+              {isEn ? 'Skip' : 'تخطي'}
+            </button>
+
+            <button 
+              onClick={() => setModalType('LOGIN')}
+              className="text-white/60 hover:text-[#D8B448] text-xs font-black underline underline-offset-4 cursor-pointer transition-colors"
+            >
+              {isEn ? 'Sign In' : 'تسجيل دخول'}
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* DESKTOP LAYOUT (HIDDEN ON MOBILE) */}
+      <div className="hidden md:block bg-[#F4F6F9] pb-12 min-h-screen">
+        
+        {/* NAVBAR */}
+        <nav className="bg-white shadow-sm sticky top-0 left-0 right-0 z-50 px-4 sm:px-8 border-b border-gray-150">
         <div className="max-w-7xl mx-auto flex items-center justify-between h-[56px] sm:h-[72px]">
           
           <div className="flex items-center gap-1.5 sm:gap-3 cursor-pointer" onClick={() => onNavigateToDashboard('CLIENT')}>
@@ -2455,6 +2690,7 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
           </div>
         </div>
       </footer>
+    </div>
 
       {/* MODAL 1: LOGIN & DEMO SHORTCUT HELPERS */}
       {modalType === 'LOGIN' && (
@@ -2489,23 +2725,55 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
 
             {authMode === 'LOGIN' ? (
               <form 
-                onSubmit={(e) => {
+                onSubmit={async (e) => {
                   e.preventDefault();
                   const email = loginEmail.trim().toLowerCase();
-                  let role: 'CLIENT' | 'COMPANY' | 'ADMIN' | 'INSPECTOR' = 'CLIENT';
                   
-                  if (email === 'admin@shattabha.com' || email.includes('admin')) {
-                    role = 'ADMIN';
-                  } else if (email === 'inspector@shattabha.com' || email.includes('inspector')) {
-                    role = 'INSPECTOR';
-                  } else if (email.includes('luxspace')) {
-                    role = 'COMPANY';
-                  } else {
-                    role = 'CLIENT';
-                    localStorage.setItem('shattabba_client_email', email);
+                  try {
+                    const user = await signInWithEmail(email, loginPassword);
+                    const profile = await getUserProfile(user.uid);
+                    
+                    let role: 'CLIENT' | 'COMPANY' | 'ADMIN' | 'INSPECTOR' = 'CLIENT';
+                    if (profile) {
+                      role = profile.role;
+                      localStorage.setItem('shattabba_client_name', profile.name);
+                      localStorage.setItem('shattabba_client_email', profile.email);
+                    } else {
+                      if (email === 'admin@shattabha.com' || email.includes('admin')) {
+                        role = 'ADMIN';
+                      } else if (email === 'inspector@shattabha.com' || email.includes('inspector')) {
+                        role = 'INSPECTOR';
+                      } else if (email.includes('luxspace')) {
+                        role = 'COMPANY';
+                      } else {
+                        role = 'CLIENT';
+                        localStorage.setItem('shattabba_client_email', email);
+                      }
+                    }
+                    setModalType('NONE');
+                    onNavigateToDashboard(role);
+                  } catch (err: any) {
+                    console.error('Firebase sign in failed:', err);
+                    const isDemo = email === 'admin@shattabha.com' || email.includes('admin') || email.includes('inspector') || email.includes('luxspace') || email === 'ahmed.rashidy@gmail.com' || email === 'client@shattabha.com';
+                    
+                    if (isDemo && loginPassword === '12345678') {
+                      let role: 'CLIENT' | 'COMPANY' | 'ADMIN' | 'INSPECTOR' = 'CLIENT';
+                      if (email === 'admin@shattabha.com' || email.includes('admin')) {
+                        role = 'ADMIN';
+                      } else if (email === 'inspector@shattabha.com' || email.includes('inspector')) {
+                        role = 'INSPECTOR';
+                      } else if (email.includes('luxspace')) {
+                        role = 'COMPANY';
+                      } else {
+                        role = 'CLIENT';
+                        localStorage.setItem('shattabba_client_email', email);
+                      }
+                      setModalType('NONE');
+                      onNavigateToDashboard(role);
+                    } else {
+                      alert(isEn ? `Login failed: ${err.message}` : `فشل تسجيل الدخول: ${err.message}`);
+                    }
                   }
-                  setModalType('NONE');
-                  onNavigateToDashboard(role);
                 }} 
                 className="space-y-4"
                 dir={isEn ? "ltr" : "rtl"}

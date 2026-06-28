@@ -1,9 +1,9 @@
 {
+  "projectId": "shatbha-v1",
+  "appId": "1:449460197338:web:08f3853592d4e43b81d2e3",
   "apiKey": "AIzaSyAkzchZ14fnp4LNqrSzsIv30pu55RskgD4",
   "authDomain": "shatbha-v1.firebaseapp.com",
-  "projectId": "shatbha-v1",
   "storageBucket": "shatbha-v1.firebasestorage.app",
   "messagingSenderId": "449460197338",
-  "appId": "1:449460197338:web:08f3853592d4e43b81d2e3",
   "measurementId": "G-5YGRMVCH2Q"
 }

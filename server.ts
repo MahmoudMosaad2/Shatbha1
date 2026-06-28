@@ -12,7 +12,7 @@ import {
   locationModifiers, 
   roleGuidelines, 
   engineeringSpecialties 
-} from "./server/shattabhaKnowledge.js";
+} from "./server/shattabhaKnowledge";
 
 // Initialize environment variables
 dotenv.config();
