@@ -1,9 +1,21 @@
-{
-  "projectId": "electric-bongo-cw532",
-  "appId": "1:1096845421349:web:4262b50b7d132ed18948cc",
-  "apiKey": "AIzaSyC1XGu8YnkpT2YyMAUklAStuUyGGwFKAf4",
-  "authDomain": "electric-bongo-cw532.firebaseapp.com",
-  "storageBucket": "electric-bongo-cw532.firebasestorage.app",
-  "messagingSenderId": "1096845421349",
-  "measurementId": ""
-}
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyAkzchZ14fnp4LNqrSzsIv30pu55RskgD4",
+  authDomain: "shatbha-v1.firebaseapp.com",
+  projectId: "shatbha-v1",
+  storageBucket: "shatbha-v1.firebasestorage.app",
+  messagingSenderId: "449460197338",
+  appId: "1:449460197338:web:08f3853592d4e43b81d2e3",
+  measurementId: "G-5YGRMVCH2Q"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
