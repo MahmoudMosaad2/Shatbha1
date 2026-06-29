@@ -99,6 +99,22 @@ export default function App() {
 
   // State for universal / global interactive project browser details
   const [viewingGlobalRequestId, setViewingGlobalRequestId] = useState<string | null>(null);
+  const [windowDimensions, setWindowDimensions] = useState({
+    width: typeof window !== 'undefined' ? window.innerWidth : 1200,
+    height: typeof window !== 'undefined' ? window.innerHeight : 800
+  });
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleResize = () => {
+      setWindowDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const handleOpenDetails = (e: Event) => {
@@ -2450,8 +2466,15 @@ setStages(prev => {
         />
       )}
 
-      {/* ✨ Global Floating AI Assistant Widget with Custom Animated AdamAvatar */}
-      <div className="fixed bottom-6 left-6 z-50 font-sans">
+      {/* ✨ Global Floating AI Assistant Widget with Custom Animated AdamAvatar - Draggable to prevent UI blocking */}
+      <motion.div 
+        drag
+        dragConstraints={{ left: -15, right: windowDimensions.width - 90, top: -windowDimensions.height + 90, bottom: 15 }}
+        dragElastic={0.15}
+        dragMomentum={false}
+        whileDrag={{ scale: 1.05, cursor: 'grabbing' }}
+        className="fixed bottom-6 left-6 z-50 font-sans cursor-grab active:cursor-grabbing touch-none select-none"
+      >
         {!isAssistantOpen && (
           <div className="relative flex flex-col items-center">
             {/* Interactive Hover Welcome Message Bubble */}
@@ -2526,7 +2549,7 @@ setStages(prev => {
             </button>
           </div>
         )}
-      </div>
+      </motion.div>
 
       {/* Fully-Immersive centered modal for the Expanded AI Assistant wrapped in high-end Framer Motion AnimatePresence & spring layout transition */}
       <AnimatePresence>

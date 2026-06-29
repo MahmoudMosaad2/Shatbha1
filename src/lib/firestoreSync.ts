@@ -1,8 +1,5 @@
 import { collection, doc, getDocs, setDoc, deleteDoc } from 'firebase/firestore';
-import { db } from './firebaseAuth';
-import { getAuth } from 'firebase/auth';
-
-const auth = getAuth();
+import { db, auth } from './firebaseAuth';
 
 export enum OperationType {
   CREATE = 'create',

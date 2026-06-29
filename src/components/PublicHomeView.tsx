@@ -773,36 +773,30 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
             {/* Right Card in RTL: Company/Contractor with Paintbrush icon for decoration */}
             <div 
               onClick={() => setModalType('COMPANY')}
-              className="bg-[#12233F]/95 backdrop-blur-md active:scale-98 border border-[#2B4D89]/40 rounded-2xl p-4 flex flex-col items-center justify-between text-center min-h-[145px] cursor-pointer group hover:bg-[#182F54] hover:border-[#D8B448]/50 hover:shadow-[0_10px_25px_rgba(216,180,72,0.2)] transition-all duration-300 shadow-xl"
+              className="bg-[#12233F]/95 backdrop-blur-md active:scale-98 border border-[#2B4D89]/40 rounded-2xl p-4.5 flex flex-col items-center justify-center text-center min-h-[135px] cursor-pointer group hover:bg-[#182F54] hover:border-[#D8B448]/50 hover:shadow-[0_10px_25px_rgba(216,180,72,0.2)] transition-all duration-300 shadow-xl"
             >
-              <div className="bg-[#2B4D89]/25 border border-[#2B4D89]/30 p-2.5 rounded-xl group-hover:scale-110 transition-transform duration-300 shadow-inner">
+              <div className="bg-[#2B4D89]/25 border border-[#2B4D89]/30 p-2.5 rounded-xl group-hover:scale-110 transition-transform duration-300 shadow-inner mb-3">
                 <Paintbrush className="w-7 h-7 text-[#D8B448]" />
               </div>
-              <div className="mt-2.5 flex flex-col items-center justify-center">
-                <h3 className="font-extrabold text-[12px] sm:text-[13px] text-white leading-tight">
-                  {isEn ? 'Register Company' : 'سجل شركتك كمقاول معتمد'}
+              <div className="flex flex-col items-center justify-center">
+                <h3 className="font-extrabold text-[13px] sm:text-[14px] text-white leading-tight">
+                  {isEn ? 'Register Company' : 'سجل شركتك'}
                 </h3>
-                <p className="text-[8px] text-slate-300 mt-1 font-sans leading-none font-medium">
-                  {isEn ? "I'd like to offer my services" : 'أود تقديم خدماتي كمقاول'}
-                </p>
               </div>
             </div>
 
             {/* Left Card in RTL: Client with Home icon */}
             <div 
               onClick={() => setModalType('CLIENT')}
-              className="bg-[#12233F]/95 backdrop-blur-md active:scale-98 border border-[#2B4D89]/40 rounded-2xl p-4 flex flex-col items-center justify-between text-center min-h-[145px] cursor-pointer group hover:bg-[#182F54] hover:border-[#2B4D89]/70 hover:shadow-[0_10px_25px_rgba(84,150,255,0.2)] transition-all duration-300 shadow-xl"
+              className="bg-[#12233F]/95 backdrop-blur-md active:scale-98 border border-[#2B4D89]/40 rounded-2xl p-4.5 flex flex-col items-center justify-center text-center min-h-[135px] cursor-pointer group hover:bg-[#182F54] hover:border-[#2B4D89]/70 hover:shadow-[0_10px_25px_rgba(84,150,255,0.2)] transition-all duration-300 shadow-xl"
             >
-              <div className="bg-[#2B4D89]/25 border border-[#2B4D89]/30 p-2.5 rounded-xl group-hover:scale-110 transition-transform duration-300 shadow-inner">
+              <div className="bg-[#2B4D89]/25 border border-[#2B4D89]/30 p-2.5 rounded-xl group-hover:scale-110 transition-transform duration-300 shadow-inner mb-3">
                 <Home className="w-7 h-7 text-[#5496FF]" />
               </div>
-              <div className="mt-2.5 flex flex-col items-center justify-center">
-                <h3 className="font-extrabold text-[12px] sm:text-[13px] text-white leading-tight">
-                  {isEn ? 'Request Finishing' : 'اطلب تشطيب عقارك الآن'}
+              <div className="flex flex-col items-center justify-center">
+                <h3 className="font-extrabold text-[13px] sm:text-[14px] text-white leading-tight">
+                  {isEn ? 'Submit Request' : 'قدم طلب تشطيب'}
                 </h3>
-                <p className="text-[8px] text-slate-300 mt-1 font-sans leading-none font-semibold">
-                  {isEn ? 'I\'m looking for professional renovation' : 'أبحث عن شركات ومقاولي تشطيب'}
-                </p>
               </div>
             </div>
 
@@ -2384,25 +2378,30 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
                     href="https://facebook.com/shattabha" 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    className="flex items-center justify-between p-4 bg-white border border-slate-200 rounded-2xl hover:border-[#2B4D89] hover:shadow-2xs transition-all duration-300 group"
+                    dir={isEn ? "ltr" : "rtl"}
+                    className="flex items-center gap-3.5 p-4 bg-white border border-slate-200 rounded-2xl hover:border-[#2B4D89] hover:shadow-2xs transition-all duration-300 group"
                   >
-                    <div className="flex items-center gap-2 text-slate-400 group-hover:text-[#2B4D89] transition-all">
-                      <ChevronLeft className={`w-4 h-4 transition-transform ${isEn ? 'rotate-180' : ''}`} />
+                    {/* Icon */}
+                    <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-[#2B4D89] shrink-0 group-hover:scale-110 transition-transform">
+                      <Facebook className="w-5 h-5" />
                     </div>
-                    
-                    <div className="flex items-center gap-3 text-right">
-                      <div className="space-y-0.5">
-                        <div className="flex items-center justify-end gap-1.5 flex-wrap">
-                          <span className="text-[11px] text-gray-400 font-bold">facebook.com/shattabha</span>
-                          <span className="text-xs font-black text-[#2B4D89] flex items-center gap-1">
-                            {isEn ? 'Our Official Facebook Page' : 'صفحتنا الرسمية على فيسبوك'}
-                            <span className="text-blue-500 text-[10px]" title="موثق">✓</span>
-                          </span>
-                        </div>
+
+                    {/* Text Container */}
+                    <div className="flex-1 min-w-0 space-y-0.5 text-right ltr:text-left">
+                      <div className="flex items-center gap-1.5 flex-wrap justify-start">
+                        <span className="text-xs font-black text-[#2B4D89]">
+                          {isEn ? 'Our Official Facebook Page' : 'صفحتنا الرسمية على فيسبوك'}
+                        </span>
+                        <span className="text-blue-500 text-[10px]" title="موثق">✓</span>
                       </div>
-                      <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-[#2B4D89] shrink-0 group-hover:scale-110 transition-transform">
-                        <Facebook className="w-5 h-5" />
+                      <div className="text-[11px] text-gray-400 font-bold truncate">
+                        facebook.com/shattabha
                       </div>
+                    </div>
+
+                    {/* Chevron */}
+                    <div className="text-slate-400 group-hover:text-[#2B4D89] transition-all shrink-0">
+                      <ChevronLeft className={`w-4 h-4 transition-transform ${isEn ? 'rotate-180' : ''}`} />
                     </div>
                   </a>
 
@@ -2411,29 +2410,32 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
                     href="https://instagram.com/shattabha" 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    className="flex items-center justify-between p-4 bg-white border border-slate-200 rounded-2xl hover:border-[#2B4D89] hover:shadow-2xs transition-all duration-300 group"
+                    dir={isEn ? "ltr" : "rtl"}
+                    className="flex items-center gap-3.5 p-4 bg-white border border-slate-200 rounded-2xl hover:border-[#2B4D89] hover:shadow-2xs transition-all duration-300 group"
                   >
-                    <div className="flex items-center gap-2 text-slate-400 group-hover:text-[#2B4D89] transition-all">
-                      <ChevronLeft className={`w-4 h-4 transition-transform ${isEn ? 'rotate-180' : ''}`} />
+                    {/* Icon */}
+                    <div className="w-10 h-10 rounded-full bg-pink-50 flex items-center justify-center text-pink-500 shrink-0 group-hover:scale-110 transition-transform">
+                      <Instagram className="w-5 h-5" />
                     </div>
 
-                    <div className="flex items-center gap-3 text-right">
-                      <div className="space-y-0.5">
-                        <div className="flex items-center justify-end gap-2">
-                          <span className="bg-pink-50 text-pink-600 text-[9px] font-black px-2 py-0.5 rounded-md">
-                            {isEn ? 'Live Coverage' : 'تغطية حيّة'}
-                          </span>
-                          <span className="text-xs font-black text-[#2B4D89]">
-                            {isEn ? 'Our Official Instagram Account' : 'حسابنا الرسمي على إنستجرام'}
-                          </span>
-                        </div>
-                        <div className="text-right">
-                          <span className="text-[11px] text-gray-400 font-bold">instagram.com/shattabha</span>
-                        </div>
+                    {/* Text Container */}
+                    <div className="flex-1 min-w-0 space-y-0.5 text-right ltr:text-left">
+                      <div className="flex items-center gap-1.5 flex-wrap justify-start">
+                        <span className="text-xs font-black text-[#2B4D89]">
+                          {isEn ? 'Our Official Instagram Account' : 'حسابنا الرسمي على إنستجرام'}
+                        </span>
+                        <span className="bg-pink-50 text-pink-600 text-[9px] font-black px-2 py-0.5 rounded-md shrink-0">
+                          {isEn ? 'Live Coverage' : 'تغطية حيّة'}
+                        </span>
                       </div>
-                      <div className="w-10 h-10 rounded-full bg-pink-50 flex items-center justify-center text-pink-500 shrink-0 group-hover:scale-110 transition-transform">
-                        <Instagram className="w-5 h-5" />
+                      <div className="text-[11px] text-gray-400 font-bold truncate">
+                        instagram.com/shattabha
                       </div>
+                    </div>
+
+                    {/* Chevron */}
+                    <div className="text-slate-400 group-hover:text-[#2B4D89] transition-all shrink-0">
+                      <ChevronLeft className={`w-4 h-4 transition-transform ${isEn ? 'rotate-180' : ''}`} />
                     </div>
                   </a>
 
@@ -2442,32 +2444,33 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
                     href="https://wa.me/201012345678" 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    className="flex items-center justify-between p-4 bg-white border border-slate-200 rounded-2xl hover:border-emerald-500 hover:shadow-2xs transition-all duration-300 group"
+                    dir={isEn ? "ltr" : "rtl"}
+                    className="flex items-center gap-3.5 p-4 bg-white border border-slate-200 rounded-2xl hover:border-emerald-500 hover:shadow-2xs transition-all duration-300 group"
                   >
-                    <div className="flex items-center gap-2 text-slate-400 group-hover:text-emerald-500 transition-all">
-                      <ChevronLeft className={`w-4 h-4 transition-transform ${isEn ? 'rotate-180' : ''}`} />
+                    {/* Icon */}
+                    <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500 shrink-0 group-hover:scale-110 transition-transform">
+                      <Phone className="w-5 h-5" />
                     </div>
 
-                    <div className="flex items-center gap-3 text-right">
-                      <div className="space-y-0.5">
-                        <div className="flex items-center justify-end gap-2">
-                          <span className="bg-emerald-50 text-emerald-600 text-[9px] font-black px-2 py-0.5 rounded-md animate-pulse">
-                            {isEn ? 'Available Now' : 'متاح الآن'}
-                          </span>
-                          <span className="text-xs font-black text-[#2B4D89]">
-                            {isEn ? 'Support & Live Chat on WhatsApp' : 'الدعم والمحادثة عبر واتساب'}
-                          </span>
-                        </div>
-                        <div className="text-right">
-                          <span className="text-[11px] text-emerald-600 font-black">
-                            <span>{isEn ? 'Instant Contact: ' : 'تواصل فوري: '}</span>
-                            <span dir="ltr">+20 101 234 5678</span>
-                          </span>
-                        </div>
+                    {/* Text Container */}
+                    <div className="flex-1 min-w-0 space-y-0.5 text-right ltr:text-left">
+                      <div className="flex items-center gap-1.5 flex-wrap justify-start">
+                        <span className="text-xs font-black text-[#2B4D89]">
+                          {isEn ? 'Support & Live Chat on WhatsApp' : 'الدعم والمحادثة عبر واتساب'}
+                        </span>
+                        <span className="bg-emerald-50 text-emerald-600 text-[9px] font-black px-2 py-0.5 rounded-md animate-pulse shrink-0">
+                          {isEn ? 'Available Now' : 'متاح الآن'}
+                        </span>
                       </div>
-                      <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500 shrink-0 group-hover:scale-110 transition-transform">
-                        <Phone className="w-5 h-5" />
+                      <div className="text-[11px] text-emerald-600 font-black truncate">
+                        <span>{isEn ? 'Instant Contact: ' : 'تواصل فوري: '}</span>
+                        <span dir="ltr">+20 101 234 5678</span>
                       </div>
+                    </div>
+
+                    {/* Chevron */}
+                    <div className="text-slate-400 group-hover:text-emerald-500 transition-all shrink-0">
+                      <ChevronLeft className={`w-4 h-4 transition-transform ${isEn ? 'rotate-180' : ''}`} />
                     </div>
                   </a>
 
