@@ -727,56 +727,69 @@ export const ClientDashboardView: React.FC<ClientDashboardViewProps> = ({
         )}
 
         {/* 🔐 Simulated Active Session Banner */}
-        <div className="bg-white rounded-3xl p-5 mb-8 shadow-sm border border-gray-150 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all">
-          <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl overflow-hidden bg-gradient-to-tr from-[#2B4D89] to-[#3a5d9c] text-white flex items-center justify-center font-extrabold text-base shadow-sm shrink-0">
-              {clientAvatar ? (
-                <img src={clientAvatar} alt="Client avatar" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-              ) : (
-                <span className="text-sm font-black">
-                  {clientName ? clientName.trim().slice(0, 2) : 'أر'}
-                </span>
-              )}
+        <div className="bg-white rounded-2xl p-4 sm:p-5 mb-8 shadow-sm border border-gray-150 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all">
+          <div className="flex flex-col sm:flex-row items-center sm:items-center gap-4 w-full md:w-auto">
+            {/* Avatar Container with subtle styling */}
+            <div className="relative group shrink-0">
+              <div className="w-14 h-14 rounded-2xl overflow-hidden bg-gradient-to-tr from-[#2B4D89] to-[#3a5d9c] text-white flex items-center justify-center font-extrabold text-lg shadow-sm border border-gray-100 ring-4 ring-gray-50">
+                {clientAvatar ? (
+                  <img src={clientAvatar} alt="Client avatar" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                ) : (
+                  <span className="text-base font-black">
+                    {clientName ? clientName.trim().slice(0, 2) : 'أر'}
+                  </span>
+                )}
+              </div>
             </div>
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-250 px-2 py-0.5 rounded-md font-extrabold flex items-center gap-1">
+
+            {/* Account Details Block */}
+            <div className={`flex-1 min-w-0 w-full ${isEn ? 'text-left' : 'text-right'}`}>
+              {/* Badge Row */}
+              <div className={`flex flex-wrap items-center gap-1.5 mb-1.5 ${isEn ? 'justify-start' : 'justify-start'}`}>
+                <span className="text-[9px] sm:text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200/60 px-2 py-0.5 rounded-md font-extrabold flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                   {isEn ? 'Secured Session 🔑' : 'اتصال آمن بالضمان 🔑'}
                 </span>
-                <span className="bg-[#2B4D89]/8 text-[#2B4D89] text-[10px] px-2.5 py-0.5 rounded-md font-black">
+                <span className="bg-[#2B4D89]/5 text-[#2B4D89] border border-[#2B4D89]/10 text-[9px] sm:text-[10px] px-2 py-0.5 rounded-md font-black">
                   {isEn ? 'Client Account' : 'حساب عميل المنصة'}
                 </span>
               </div>
-              <h4 className="font-extrabold text-sm text-gray-850 mt-1">
+
+              {/* Name & Greeting */}
+              <h4 className="font-extrabold text-sm sm:text-base text-gray-850 tracking-tight leading-tight">
                 <span>{isEn ? 'Welcome back, ' : 'مرحباً بك مجدداً، '}</span>
                 <span className="text-[#2B4D89] font-black">{clientName}</span>
               </h4>
-              <div className="flex flex-wrap justify-start items-center gap-3 mt-1">
-                <p className="text-[10px] text-gray-400 font-semibold">
-                  {isEn ? `Authorized Email: ${clientEmail} • Account Code: ID#4092` : `البريد المسجل: ${clientEmail} • كود الحساب: ID#4092`}
-                </p>
-                <button 
-                  onClick={() => setIsProfileSettingsOpen(true)}
-                  className="bg-[#2B4D89]/10 hover:bg-[#2B4D89]/18 text-[#2B4D89] text-[9.5px] px-2 py-0.5 rounded-md border border-[#2B4D89]/15 font-bold transition-all flex items-center gap-1 cursor-pointer"
-                >
-                  <span>⚙️</span>
-                  <span>{isEn ? 'Edit Profile Photo' : 'إدارة الملف الشخصي ومزامنة الصورة للعميل'}</span>
-                </button>
-              </div>
+
+              {/* Sub-details (Email & ID) */}
+              <p className="text-[10.5px] text-gray-400 font-semibold mt-1 leading-normal">
+                {isEn ? `Authorized Email: ${clientEmail} • Account Code: ID#4092` : `البريد المسجل: ${clientEmail} • كود الحساب: ID#4092`}
+              </p>
             </div>
           </div>
-          <button
-            onClick={() => {
-              if (onSignOut) {
-                onSignOut();
-              }
-            }}
-            className="self-start md:self-auto bg-red-500/10 hover:bg-red-500/18 text-[#E05252] border border-red-500/25 hover:border-red-500/40 px-5 py-2.5 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-xs"
-          >
-            <span>🚪</span>
-            <span>{isEn ? 'Sign Out Securely' : 'تسجيل الخروج (Sign out)'}</span>
-          </button>
+
+          {/* Action Buttons: Sign Out and Edit settings on Mobile */}
+          <div className="flex flex-row items-center justify-center md:justify-end gap-2 w-full md:w-auto mt-2 md:mt-0 pt-3 md:pt-0 border-t md:border-t-0 border-gray-100">
+            <button 
+              onClick={() => setIsProfileSettingsOpen(true)}
+              className="flex-1 sm:flex-none bg-gray-50 hover:bg-gray-100 text-gray-600 text-[11px] px-3.5 py-1.5 rounded-xl border border-gray-200 font-bold transition-all flex items-center justify-center gap-1 cursor-pointer"
+            >
+              <span>⚙️</span>
+              <span>{isEn ? 'Edit Profile' : 'تعديل الملف'}</span>
+            </button>
+            
+            <button
+              onClick={() => {
+                if (onSignOut) {
+                  onSignOut();
+                }
+              }}
+              className="flex-1 sm:flex-none bg-red-50 hover:bg-red-100 text-rose-600 border border-red-150 px-3.5 py-1.5 rounded-xl text-[11px] font-bold transition-all flex items-center justify-center gap-1 cursor-pointer shadow-2xs"
+            >
+              <span>🚪</span>
+              <span>{isEn ? 'Sign Out' : 'تسجيل الخروج'}</span>
+            </button>
+          </div>
         </div>
 
         {/* STATS DASHBOARD & NEW REQUEST BUTTON */}
