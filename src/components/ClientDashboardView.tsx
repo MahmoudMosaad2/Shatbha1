@@ -5700,8 +5700,8 @@ export const ClientDashboardView: React.FC<ClientDashboardViewProps> = ({
 
                 </div>
 
-                {/* Rooms size row (Bedrooms, Bathrooms, Kitchens) - Sleek, uniform, strictly aligned in single row with NO borders */}
-                <div className="grid grid-cols-3 gap-2 bg-[#F4F6FA] p-2 rounded-2xl">
+                {/* Rooms size row (Bedrooms, Bathrooms, Kitchens) - Sleek, uniform, responsive grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 bg-[#F4F6FA] p-2 rounded-2xl">
                   {/* Bedrooms */}
                   <div className="flex flex-row items-center justify-between gap-1.5 bg-white p-2 px-2.5 rounded-xl shadow-2xs">
                     <div className="flex items-center gap-1 min-w-0">

@@ -2510,8 +2510,8 @@ setStages(prev => {
             )}
 
             {/* Float Trigger Button containing the Vector Animated Avatar */}
-            <button
-              onClick={() => {
+            <motion.button
+              onTap={() => {
                 setIsAssistantOpen(true);
                 setAvatarHovered(false);
               }}
@@ -2546,7 +2546,7 @@ setStages(prev => {
               <span className="absolute bottom-1 bg-gradient-to-r from-[#213555] via-[#2B4D89] to-[#1E3A68] text-[9.5px] text-white dark:text-[#D8B448] px-3.5 py-1 rounded-full font-black tracking-wider shadow-lg border border-white/20 whitespace-nowrap opacity-95 group-hover:opacity-100 group-hover:scale-105 transition-all group-hover:shadow-[0_0_15px_rgba(216,180,72,0.45)]">
                 {lang === 'en' ? '★ CONSULT ADAM' : '🏠 اسأل آدم الآن'}
               </span>
-            </button>
+            </motion.button>
           </div>
         )}
       </motion.div>
