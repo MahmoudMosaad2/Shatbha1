@@ -108,6 +108,7 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
   const [showAfter, setShowAfter] = useState<boolean>(true);
   const [slideIndex, setSlideIndex] = useState(0);
   const [mobileActiveSlide, setMobileActiveSlide] = useState(0);
+  const [showMobileLanding, setShowMobileLanding] = useState(false);
 
   // Loaded slides list (backed by customizable CMS)
   const [slides, setSlides] = useState(() => {
@@ -608,7 +609,7 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
     <div className={`${isEn ? 'text-left' : 'text-right'} font-sans antialiased min-h-screen overflow-x-hidden`} style={{ direction: isEn ? 'ltr' : 'rtl' }}>
       
       {/* MOBILE IMMERSIVE LAYOUT (FIVERR-INSPIRED SHATBHA PREMIUM LOOK) */}
-      <div className="block md:hidden bg-[#0A162D] text-white min-h-screen flex flex-col justify-between overflow-x-hidden relative font-sans" style={{ direction: isEn ? 'ltr' : 'rtl' }}>
+      <div className={`${showMobileLanding ? 'hidden' : 'block md:hidden'} bg-[#0A162D] text-white min-h-screen flex flex-col justify-between overflow-x-hidden relative font-sans`} style={{ direction: isEn ? 'ltr' : 'rtl' }}>
         
         {/* Background Image with elegant brand-themed overlay */}
         <div className="absolute inset-0 z-0">
@@ -805,7 +806,7 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
           {/* Under buttons: Skip on the right (RTL), Sign In on the left (RTL) */}
           <div className="flex items-center justify-between px-2" dir={isEn ? "ltr" : "rtl"}>
             <button 
-              onClick={() => onNavigateToDashboard('CLIENT')}
+              onClick={() => setShowMobileLanding(true)}
               className="text-white/60 hover:text-[#D8B448] text-xs font-black underline underline-offset-4 cursor-pointer transition-colors"
             >
               {isEn ? 'Skip' : 'تخطي'}
@@ -823,14 +824,23 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
 
       </div>
 
-      {/* DESKTOP LAYOUT (HIDDEN ON MOBILE) */}
-      <div className="hidden md:block bg-[#F4F6F9] pb-12 min-h-screen">
+      {/* DESKTOP LAYOUT (OR MOBILE FULL LANDING) */}
+      <div className={`${showMobileLanding ? 'block' : 'hidden md:block'} bg-[#F4F6F9] pb-12 min-h-screen`}>
         
         {/* NAVBAR */}
         <nav className="bg-white shadow-sm sticky top-0 left-0 right-0 z-50 px-4 sm:px-8 border-b border-gray-150">
         <div className="max-w-7xl mx-auto flex items-center justify-between h-[56px] sm:h-[72px]">
           
-          <div className="flex items-center gap-1.5 sm:gap-3 cursor-pointer" onClick={() => onNavigateToDashboard('CLIENT')}>
+          <div 
+            className="flex items-center gap-1.5 sm:gap-3 cursor-pointer" 
+            onClick={() => {
+              if (showMobileLanding) {
+                setShowMobileLanding(false);
+              } else {
+                onNavigateToDashboard('CLIENT');
+              }
+            }}
+          >
             <ShattabhaLogo className="w-8 h-8 sm:w-11 sm:h-11" />
             <div className={`flex flex-col select-none ${isEn ? 'items-start' : 'items-end'}`}>
               <span className="font-extrabold text-xs sm:text-lg text-[#2B4D89] leading-tight tracking-tight">
