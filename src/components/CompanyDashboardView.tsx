@@ -3,7 +3,7 @@ import {
   Plus, CheckCircle, Clock, Search, Layers, FileText, 
   MapPin, Award, Trash2, ShieldCheck, Image as ImageIcon, Sparkles,
   AlertTriangle, CheckCircle2, Activity, User, PhoneCall, ChevronRight,
-  ChevronLeft, Download, Filter, Printer
+  ChevronLeft, Download, Filter, Printer, Globe, LogOut
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Company, ClientRequest, Offer, ProjectStage, Contract } from '../types';
@@ -55,9 +55,11 @@ export interface CompanyDashboardViewProps {
   stages: ProjectStage[];
   onUpdateStage: (stageId: string, updates: Partial<ProjectStage>) => void;
   lang: Language;
+  setLang?: (lang: Language) => void;
   contracts?: Contract[];
   onUpdateRequest?: (requestId: string, updates: Partial<ClientRequest>) => void;
   onSignOut?: () => void;
+  onUpdateCompany?: (companyId: string, updates: Partial<Company>) => void;
 }
 
 // Stateful component to handle the ticking live countdown of the warranty
@@ -170,6 +172,7 @@ export const CompanyDashboardView: React.FC<CompanyDashboardViewProps> = ({
   stages,
   onUpdateStage,
   lang,
+  setLang,
   contracts = [],
   onUpdateRequest,
   onSignOut,
@@ -839,6 +842,41 @@ ${(activeCompany.packages || []).map((p: any, idx: number) => `\n[${idx + 1}] ب
 
   return (
     <div className={`${isEn ? 'dir-ltr text-left' : 'dir-rtl text-right'} font-sans min-h-screen bg-[#F0F3F7] pb-20`}>
+      {/* MOBILE & DESKTOP TOP HEADER BAR */}
+      <div className="bg-[#232F3F] text-white px-4 py-3 flex items-center justify-between border-b border-[#D8B448] shadow-sm z-30 w-full shrink-0 no-print">
+        <div className="flex items-center gap-2">
+          <span className="text-xl">🏢</span>
+          <div className="text-right">
+            <h1 className="text-sm font-black text-white">
+              {isEn ? "Shatibha Contractor Portal" : "لوحة تحكم شركة المقاولات"}
+            </h1>
+            <p className="text-[9px] text-gray-400">
+              {isEn ? "Secure Competitive Bidding" : "عروض الأسعار وضمان الجودة الهندسية"}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          {setLang && (
+            <button
+              onClick={() => setLang(isEn ? 'ar' : 'en')}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20 text-[11px] font-black hover:bg-amber-500/20 transition-all cursor-pointer"
+            >
+              <Globe className="w-3 h-3 text-[#D8B448]" />
+              <span>{isEn ? 'العربية' : 'English'}</span>
+            </button>
+          )}
+          {onSignOut && (
+            <button
+              onClick={onSignOut}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[11px] font-black hover:bg-rose-500/20 transition-all cursor-pointer"
+            >
+              <LogOut className="w-3 h-3" />
+              <span>{isEn ? 'Sign Out' : 'تسجيل الخروج'}</span>
+            </button>
+          )}
+        </div>
+      </div>
+
       {/* Custom print CSS for seamless printable reports */}
       <style dangerouslySetInnerHTML={{ __html: `
         @media print {

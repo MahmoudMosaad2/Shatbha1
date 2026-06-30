@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   ShieldAlert, CheckCircle2, XCircle, Camera, RefreshCw, MapPin, 
   Phone, User, Check, AlertCircle, FileText, ClipboardList, Navigation, 
-  Map, Eye, Star, Compass, CloudLightning
+  Map, Eye, Star, Compass, CloudLightning, Globe, LogOut
 } from 'lucide-react';
 import { ClientRequest, ProjectStage, Inspector } from '../types';
 import { Language, getTranslation } from '../lib/translations';
@@ -13,6 +13,7 @@ interface SiteInspectorDashboardViewProps {
   inspectors: Inspector[];
   onUpdateStage: (stageId: string, updates: Partial<ProjectStage>) => void;
   lang: Language;
+  setLang?: (lang: Language) => void;
   onUpdateRequest?: (requestId: string, updates: Partial<ClientRequest>) => void;
   onSignOut?: () => void;
 }
@@ -23,6 +24,7 @@ export const SiteInspectorDashboardView: React.FC<SiteInspectorDashboardViewProp
   inspectors,
   onUpdateStage,
   lang,
+  setLang,
   onUpdateRequest,
   onSignOut
 }) => {
@@ -1197,6 +1199,40 @@ export const SiteInspectorDashboardView: React.FC<SiteInspectorDashboardViewProp
 
   return (
     <div className={`${isEn ? 'dir-ltr text-left' : 'dir-rtl text-right'} font-sans min-h-screen bg-[#F0F3F7] pb-24`}>
+      {/* MOBILE & DESKTOP TOP HEADER BAR */}
+      <div className="bg-[#232F3F] text-white px-4 py-3 flex items-center justify-between border-b border-[#D8B448] shadow-sm z-30 w-full shrink-0 no-print">
+        <div className="flex items-center gap-2">
+          <span className="text-xl">🛡️</span>
+          <div className="text-right">
+            <h1 className="text-sm font-black text-white">
+              {isEn ? "Shatibha Engineering Inspector Portal" : "لوحة تحكم مهندس الفحص الفني"}
+            </h1>
+            <p className="text-[9px] text-gray-400">
+              {isEn ? "Shatibha Engineering Audits" : "الرقابة والمطابقة الهندسية وضمان العقد"}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          {setLang && (
+            <button
+              onClick={() => setLang(isEn ? 'ar' : 'en')}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20 text-[11px] font-black hover:bg-amber-500/20 transition-all cursor-pointer"
+            >
+              <Globe className="w-3 h-3 text-[#D8B448]" />
+              <span>{isEn ? 'العربية' : 'English'}</span>
+            </button>
+          )}
+          {onSignOut && (
+            <button
+              onClick={onSignOut}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[11px] font-black hover:bg-rose-500/20 transition-all cursor-pointer"
+            >
+              <LogOut className="w-3 h-3" />
+              <span>{isEn ? 'Sign Out' : 'تسجيل الخروج'}</span>
+            </button>
+          )}
+        </div>
+      </div>
       
       {/* 1. HEADER SECTION & ENGINEER SELECTOR */}
       <div className="bg-white border-b border-gray-150 px-4 sm:px-6 py-5 shadow-xs">

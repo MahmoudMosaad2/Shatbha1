@@ -39,6 +39,8 @@ import {
   Copy,
   ExternalLink,
   Send,
+  Globe,
+  LogOut,
 } from "lucide-react";
 import {
   ClientRequest,
@@ -966,170 +968,11 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
     },
   ]);
 
-  const [localClients, setLocalClients] = useState<any[]>([
-    {
-      id: "CLI-1",
-      name: "أحمد محمود الرفاعي",
-      email: "ahmed.rifai@gmail.com",
-      phone: "01061234567",
-      status: "ACTIVE",
-      createdAt: "2026-05-01",
-      notes: "عميل مسجل مهتم بتشطيب شقة بمدينة نصر",
-      password: "ClientPass123_1",
-    },
-    {
-      id: "CLI-2",
-      name: "دينا الشربيني",
-      email: "dina.sherbini@yahoo.com",
-      phone: "01159876543",
-      status: "ACTIVE",
-      createdAt: "2026-05-10",
-      notes: "صاحبة فيلا في الشيخ زايد",
-      password: "ClientPass123_2",
-    },
-    {
-      id: "CLI-3",
-      name: "هاني شاكر سليمان",
-      email: "hani.shaker@outlook.com",
-      phone: "01221113344",
-      status: "SUSPENDED",
-      createdAt: "2026-05-15",
-      notes: "حساب موقوف مؤقتاً لمراجعة التجاوزات بالتصريح",
-      password: "ClientPass123_3",
-    },
-    {
-      id: "CLI-4",
-      name: "مروان خوري",
-      email: "marwan.khoury@gmail.com",
-      phone: "01556677889",
-      status: "BLOCKED",
-      createdAt: "2026-05-20",
-      notes: "تم حظره لتكرار حجز المعاينة دون التواجد بالموقع",
-      password: "ClientPass123_4",
-    },
-  ]);
+  const [localClients, setLocalClients] = useState<any[]>([]);
 
-  const [localCompaniesState, setLocalCompaniesState] = useState<any[]>([
-    {
-      id: "COMP-1",
-      companyName: "LuxSpace Interiors",
-      responsibleName: "م/ شريف عثمان",
-      email: "sherif.osman@luxspace.com",
-      phone: "01012345678",
-      commercialReg: "CR-882947-LUX.pdf",
-      taxCard: "TC-99201-LUX.pdf",
-      status: "APPROVED",
-      finishingTypes: ["لوكس", "سوبر لوكس", "بريميوم"],
-      governorates: ["القاهرة", "الجيزة"],
-      rating: 4.9,
-      projectsCompleted: 62,
-      isVerified: true,
-      password: "CompanyPass123_1",
-    },
-    {
-      id: "COMP-2",
-      companyName: "Mimar Pro",
-      responsibleName: "مهندس باسم جلال",
-      email: "bassem.galal@mimarpro.com",
-      phone: "01122334455",
-      commercialReg: "CR-772911-MIM.pdf",
-      taxCard: "TC-44021-MIM.pdf",
-      status: "APPROVED",
-      finishingTypes: ["اقتصادي", "لوكس", "سوبر لوكس"],
-      governorates: ["القاهرة"],
-      rating: 4.7,
-      projectsCompleted: 45,
-      isVerified: true,
-      password: "CompanyPass123_2",
-    },
-    {
-      id: "COMP-3",
-      companyName: "DecorPro Egypt",
-      responsibleName: "م/ علاء الدين حسني",
-      email: "alaa.hosny@decorpro.com",
-      phone: "01223344556",
-      commercialReg: "CR-554102-DEC.pdf",
-      taxCard: "TC-33201-DEC.pdf",
-      status: "APPROVED",
-      finishingTypes: ["لوكس", "سوبر لوكس"],
-      governorates: ["القاهرة", "الجيزة"],
-      rating: 4.6,
-      projectsCompleted: 38,
-      isVerified: false,
-      password: "CompanyPass123_3",
-    },
-    {
-      id: "COMP-4",
-      companyName: "EGY Build & Finishes",
-      responsibleName: "أ. حسام فؤاد",
-      email: "hossam.fouad@egybuild.com",
-      phone: "01511223344",
-      commercialReg: "CR-112009-EGY.pdf",
-      taxCard: "TC-55612-EGY.pdf",
-      status: "PENDING_APPROVAL",
-      finishingTypes: ["اقتصادي", "لوكس", "سوبر لوكس", "بريميوم"],
-      governorates: ["القاهرة", "الجيزة", "الإسكندرية"],
-      rating: 5.0,
-      projectsCompleted: 0,
-      isVerified: false,
-      password: "CompanyPass123_4",
-    },
-    {
-      id: "COMP-5",
-      companyName: "Elite Finishes Co.",
-      responsibleName: "م/ نادر شكري",
-      email: "nader.shokry@elitefinishes.com",
-      phone: "01066778899",
-      commercialReg: "CR-334112-ELI.pdf",
-      taxCard: "TC-88902-ELI.pdf",
-      status: "SUSPENDED",
-      finishingTypes: ["لوكس", "سوبر لوكس", "بريميوم"],
-      governorates: ["القاهرة"],
-      rating: 4.8,
-      projectsCompleted: 27,
-      isVerified: false,
-      password: "CompanyPass123_5",
-    },
-  ]);
+  const [localCompaniesState, setLocalCompaniesState] = useState<any[]>([]);
 
-  const [auditLogs, setAuditLogs] = useState<any[]>([
-    {
-      id: "LOG-1",
-      adminName: "م/ محمد شهاب (الأدمن الرئيسي)",
-      action: "تفعيل حساب شركة والتوثيق",
-      targetUser: "LuxSpace Interiors (شركة مقاولات)",
-      timestamp: "2026-06-03T14:20:00Z",
-      details:
-        "تم ترقية الشركة إلى شريك موثق بالعلامة الزرقاء لالتزامها التام بمواصفات التشطيب الكودية.",
-    },
-    {
-      id: "LOG-2",
-      adminName: "أحمد فاروق",
-      action: "تنسيق الدفعة المالية الأولى",
-      targetUser: "أحمد محمود الرفاعي (عميل)",
-      timestamp: "2026-06-03T11:05:00Z",
-      details:
-        "مراجعة الدفعة المالية المودوعة في حساب الضمان للمرحلة الأولى (أعمال السباكة).",
-    },
-    {
-      id: "LOG-3",
-      adminName: "سارة كمال",
-      action: "تعيين مشرف هندسي تلقائياً",
-      targetUser: "م/ يحيى زكريا (مشرف فني)",
-      timestamp: "2026-06-03T09:44:00Z",
-      details:
-        "إسناد المعاينة التلقائية الخاصة بمشروع التجمع الخامس وفقاً للتوزيع المتوازن وموقع الوحدة.",
-    },
-    {
-      id: "LOG-4",
-      adminName: "م/ محمد شهاب (الأدمن الرئيسي)",
-      action: "إنشاء حساب مشرف إداري بفريق العمل",
-      targetUser: "يوسف حسن (مشرف دعم وخدمة عملاء)",
-      timestamp: "2026-06-02T16:12:00Z",
-      details:
-        "إنشاء حساب جديد للمشرف يوسف حسن وتعيين الصلاحيات: [إدارة العملاء، الدعم الفني].",
-    },
-  ]);
+  const [auditLogs, setAuditLogs] = useState<any[]>([]);
 
   const [userSearchQuery, setUserSearchQuery] = useState("");
   const [userStatusFilter, setUserStatusFilter] = useState("ALL");
@@ -1193,6 +1036,32 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
       });
     }
   }, [companies]);
+
+  // Sync clients prop / derived from requests to localClients
+  useEffect(() => {
+    if (requests) {
+      setLocalClients((prev) => {
+        const updated = [...prev];
+        requests.forEach((req) => {
+          if (!req.clientId) return;
+          const idx = updated.findIndex((c) => c.id === req.clientId);
+          if (idx === -1) {
+            updated.push({
+              id: req.clientId,
+              name: req.clientName || "عميل شطبها",
+              email: req.clientEmail || "client@shattabba.com",
+              phone: req.clientPhone || "غير محدد",
+              status: "ACTIVE",
+              createdAt: req.createdAt ? req.createdAt.split('T')[0] : new Date().toISOString().split('T')[0],
+              notes: req.notes || "طلب تشطيب مسجل عبر المنصة",
+              password: "ClientPass123_New",
+            });
+          }
+        });
+        return updated;
+      });
+    }
+  }, [requests]);
 
   // Helper to update both localInspectors and propagate changes up to parent inspectors state
   const updateInspectorsAndSync = (
@@ -2700,17 +2569,19 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
           {setLang && (
             <button
               onClick={() => setLang(isEn ? 'ar' : 'en')}
-              className="p-1.5 rounded-lg bg-[#D8B448]/10 text-[#D8B448] border border-[#D8B448]/30 text-[10px] font-bold transition-all px-2 uppercase"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20 text-[11px] font-black hover:bg-amber-500/20 transition-all cursor-pointer"
             >
-              {isEn ? 'عربي' : 'EN'}
+              <Globe className="w-3 h-3 text-[#D8B448]" />
+              <span>{isEn ? 'العربية' : 'English'}</span>
             </button>
           )}
           {onSignOut && (
             <button
               onClick={onSignOut}
-              className="p-1.5 rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/30 text-xs font-bold transition-all"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[11px] font-black hover:bg-rose-500/20 transition-all cursor-pointer"
             >
-              🚪
+              <LogOut className="w-3 h-3" />
+              <span>{isEn ? 'Sign Out' : 'تسجيل الخروج'}</span>
             </button>
           )}
           <button
@@ -2860,10 +2731,10 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
             {setLang && (
               <button
                 onClick={() => setLang(isEn ? 'ar' : 'en')}
-                className="bg-[#D8B448]/10 hover:bg-[#D8B448]/20 text-[#D8B448] border border-[#D8B448]/30 px-4 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 uppercase"
+                className="bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/30 px-4 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
               >
-                <span>🌍</span>
-                {isEn ? 'عربي' : 'English'}
+                <Globe className="w-3.5 h-3.5 text-[#D8B448]" />
+                <span>{isEn ? 'العربية' : 'English'}</span>
               </button>
             )}
             <div className="bg-[#151D2A]/60 px-3.5 py-1.5 rounded-full border border-gray-700 text-xs font-bold text-[#D8B448]">
@@ -2874,10 +2745,10 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
             {onSignOut && (
               <button
                 onClick={onSignOut}
-                className="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-4 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5"
+                className="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-4 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
               >
-                <span>🚪</span>
-                {isEn ? "Sign Out" : "تسجيل الخروج"}
+                <LogOut className="w-3.5 h-3.5" />
+                <span>{isEn ? "Sign Out" : "تسجيل الخروج"}</span>
               </button>
             )}
           </div>
@@ -4011,12 +3882,18 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                           </div>
 
                           {/* Card 3: Approved Registered Firms */}
-                          <div className="bg-gradient-to-br from-[#D8B448]/5 to-[#D8B448]/12 border border-[#D8B448]/15 rounded-2xl p-4.5 flex flex-col justify-between transition-all hover:scale-[1.015] duration-200 text-right">
+                          <div 
+                            onClick={() => {
+                              setActiveTab("LICENSING");
+                              setLicenseStatusFilter("APPROVED");
+                            }}
+                            className="bg-gradient-to-br from-[#D8B448]/5 to-[#D8B448]/12 border border-[#D8B448]/15 rounded-2xl p-4.5 flex flex-col justify-between transition-all hover:scale-[1.015] duration-200 text-right cursor-pointer hover:border-[#D8B448]/35 hover:shadow-xs"
+                          >
                             <div className="flex items-center justify-between">
                               <span className="text-[10px] font-black text-amber-800 tracking-wider uppercase">
                                 {isEn ? "APPROVED FIRMS" : "الشركات المعتمدة"}
                               </span>
-                              <span className="text-lg bg-[#D8B448]/15 p-1.5 rounded-lg">
+                              <span className="text-lg bg-[#D8B448]/15 p-1.5 rounded-lg animate-pulse">
                                 🏢
                               </span>
                             </div>
@@ -4026,8 +3903,8 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                               </span>
                               <span className="text-[10px] font-bold text-gray-500 mt-1 block">
                                 {isEn
-                                  ? "⭐ Verified Commercial Sijil"
-                                  : "⭐ مقاولين مسجلين خاضعين للتأمين"}
+                                  ? "⭐ Verified Commercial Sijil (Click to inspect)"
+                                  : "⭐ مقاولين مسجلين خاضعين للتأمين (اضغط للفحص)"}
                               </span>
                             </div>
                           </div>
@@ -4322,7 +4199,13 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                           (c) => c.status === "APPROVED",
                         ).length;
                         return (
-                          <div className="bg-gradient-to-br from-blue-50 to-[#2B4D89]/5 p-5 rounded-2xl border border-blue-100 flex items-center justify-between shadow-2xs text-right">
+                          <div 
+                            onClick={() => {
+                              setActiveTab("LICENSING");
+                              setLicenseStatusFilter("APPROVED");
+                            }}
+                            className="bg-gradient-to-br from-blue-50 to-[#2B4D89]/5 p-5 rounded-2xl border border-blue-100 flex items-center justify-between shadow-2xs text-right cursor-pointer hover:scale-[1.01] hover:border-blue-200 transition-all duration-150"
+                          >
                             <div className="space-y-1">
                               <span className="text-[10px] font-bold tracking-wider text-blue-800 uppercase block">
                                 {isEn ? "CERTIFIED FIRMS" : "الشركات المعتمدة"}
@@ -4332,8 +4215,8 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                               </p>
                               <span className="text-[10px] text-gray-500 font-medium block">
                                 {isEn
-                                  ? "🛡️ Insured & officially verified"
-                                  : "🛡️ شركات مرخصة ومجتازة للمراجعة"}
+                                  ? "🛡️ Insured & officially verified (Click to view)"
+                                  : "🛡️ شركات مرخصة ومجتازة للمراجعة (اضغط للمعاينة)"}
                               </span>
                             </div>
                             <div className="h-11 w-11 bg-blue-500/10 text-blue-700 font-extrabold rounded-xl flex items-center justify-center text-xl shadow-inner shrink-0">
@@ -7695,7 +7578,7 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                       {(() => {
                         const filteredList = localCompaniesState.filter((comp) => {
                           const matchSearch =
-                            comp.companyName.toLowerCase().includes(licenseSearch.toLowerCase()) ||
+                            (comp.companyName || "").toLowerCase().includes(licenseSearch.toLowerCase()) ||
                             (comp.phone || "").includes(licenseSearch) ||
                             (comp.email || "").toLowerCase().includes(licenseSearch.toLowerCase());
                           
@@ -7986,7 +7869,7 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                     <div className="overflow-x-auto text-right" dir="rtl">
                       {(() => {
                         const verifiedList = localCompaniesState.filter((comp) => {
-                          const matchSearch = comp.companyName.toLowerCase().includes(verifySearch.toLowerCase());
+                          const matchSearch = (comp.companyName || "").toLowerCase().includes(verifySearch.toLowerCase());
                           if (!matchSearch) return false;
 
                           if (verifyBadgeFilter === "VERIFIED" && !comp.isVerified) return false;
@@ -15318,8 +15201,8 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                                           baselineMap,
                                         ).find(
                                           (k) =>
-                                            comp.companyName.includes(k) ||
-                                            k.includes(comp.companyName),
+                                            (comp.companyName || "").includes(k) ||
+                                            k.includes(comp.companyName || ""),
                                         );
                                         avgDuration = key
                                           ? baselineMap[key]
@@ -22936,17 +22819,17 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                                     if (avgDuration === 0) {
                                       const key = Object.keys(baselineMap).find(
                                         (k) =>
-                                          comp.companyName.includes(k) ||
-                                          k.includes(comp.companyName),
+                                          (comp.companyName || "").includes(k) ||
+                                          k.includes(comp.companyName || ""),
                                       );
                                       avgDuration = key ? baselineMap[key] : 55;
                                     }
 
                                     return {
                                       name:
-                                        comp.companyName.length > 12
-                                          ? `${comp.companyName.substring(0, 10)}.`
-                                          : comp.companyName,
+                                        (comp.companyName || "").length > 12
+                                          ? `${(comp.companyName || "").substring(0, 10)}.`
+                                          : (comp.companyName || ""),
                                       days: avgDuration,
                                     };
                                   });
@@ -23060,9 +22943,9 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                                       {isEn ? "Active contracts" : "عقود سارية"}
                                     </td>
                                     <td className="p-2 text-left font-black text-gray-800 font-mono">
-                                      {comp.companyName.includes("أركان")
+                                      {(comp.companyName || "").includes("أركان")
                                         ? "45"
-                                        : comp.companyName.includes("العاصمة")
+                                        : (comp.companyName || "").includes("العاصمة")
                                           ? "60"
                                           : "40"}{" "}
                                       {isEn ? "Days" : "يوم عمل"}
@@ -25271,7 +25154,8 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
 
 نحن متحمسون جداً للعمل معكم وخدمة عملائنا على أعلى مستويات الجودة الهندسية!
 فريق منصة شطبها لخدمات الديكور والتشطيب 🏗️✨`;
-                        const sanitizedPhone = welcomePortalEntity.phone.replace(/[^\d+]/g, "");
+                        const phoneStr = welcomePortalEntity.phone || "01000000000";
+                        const sanitizedPhone = phoneStr.replace(/[^\d+]/g, "");
                         const targetPhone = sanitizedPhone.startsWith("+") || sanitizedPhone.startsWith("00") ? sanitizedPhone : "20" + sanitizedPhone;
                         window.open(`https://wa.me/${targetPhone}?text=${encodeURIComponent(text)}`, "_blank");
                         showToast("💬 جاري النقل والمشاركة الفورية للولوج والشكر عبر الواتساب...");

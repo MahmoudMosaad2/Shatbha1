@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Building2, Plus, Clock, ExternalLink, Calendar, 
   Layers, CheckCircle, Info, ChevronRight, ChevronLeft, MessageSquare, 
-  ShieldCheck, FileText, MapPin, Landmark, DollarSign, Award, ArrowLeftRight, Sparkles, Search
+  ShieldCheck, FileText, MapPin, Landmark, DollarSign, Award, ArrowLeftRight, Sparkles, Search, Globe, LogOut
 } from 'lucide-react';
 import { ClientRequest, Offer, Company, ProjectStage, Contract, RequestStatus, PromoCode } from '../types';
 import { Language, getTranslation } from '../lib/translations';
@@ -46,6 +46,7 @@ interface ClientDashboardViewProps {
   stages: ProjectStage[];
   onUpdateStage: (stageId: string, updates: Partial<ProjectStage>) => void;
   lang: Language;
+  setLang?: (lang: Language) => void;
   onSignOut?: () => void;
   promoCodes?: PromoCode[];
   onUpdateRequest?: (requestId: string, updates: Partial<ClientRequest>) => void;
@@ -62,6 +63,7 @@ export const ClientDashboardView: React.FC<ClientDashboardViewProps> = ({
   stages,
   onUpdateStage,
   lang,
+  setLang,
   onSignOut,
   promoCodes = [],
   onUpdateRequest
@@ -707,6 +709,41 @@ export const ClientDashboardView: React.FC<ClientDashboardViewProps> = ({
 
   return (
     <div className={`${isEn ? 'dir-ltr text-left' : 'dir-rtl text-right'} font-sans min-h-screen bg-[#F0F3F7] pb-16`}>
+      {/* MOBILE & DESKTOP TOP HEADER BAR */}
+      <div className="bg-[#232F3F] text-white px-4 py-3 flex items-center justify-between border-b border-[#D8B448] shadow-sm z-30 w-full shrink-0 no-print">
+        <div className="flex items-center gap-2">
+          <span className="text-xl">🏡</span>
+          <div className="text-right">
+            <h1 className="text-sm font-black text-white">
+              {isEn ? "Shatibha Client Portal" : "لوحة تحكم عميل شطبها"}
+            </h1>
+            <p className="text-[9px] text-gray-400">
+              {isEn ? "Secure Escrow & Quality Audits" : "الضمان المالي والرقابة الهندسية"}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          {setLang && (
+            <button
+              onClick={() => setLang(isEn ? 'ar' : 'en')}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20 text-[11px] font-black hover:bg-amber-500/20 transition-all cursor-pointer"
+            >
+              <Globe className="w-3 h-3 text-[#D8B448]" />
+              <span>{isEn ? 'العربية' : 'English'}</span>
+            </button>
+          )}
+          {onSignOut && (
+            <button
+              onClick={onSignOut}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[11px] font-black hover:bg-rose-500/20 transition-all cursor-pointer"
+            >
+              <LogOut className="w-3 h-3" />
+              <span>{isEn ? 'Sign Out' : 'تسجيل الخروج'}</span>
+            </button>
+          )}
+        </div>
+      </div>
+
       <div className="max-w-7xl mx-auto px-3 sm:px-4 pt-4 mb-4">
         
         {/* Waiting for Technical Inspection Warning Banner */}

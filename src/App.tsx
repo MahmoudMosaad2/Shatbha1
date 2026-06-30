@@ -193,21 +193,47 @@ export default function App() {
   // Core Reactive States with robust existence check
   const [requests, setRequests] = useState<ClientRequest[]>(() => {
     const loaded = loadStoredData('shatibha_requests_v4', initialRequests) as ClientRequest[];
-    // Clean up any previously auto-generated mock requests to fix the bug where users see requests they didn't create
-    return loaded.filter(r => r.notes !== 'طلب تشطيب جديد مضاف تلقائياً لحسابك المفعّل فور تسجيلك بموقع شطبها.');
+    return loaded.filter(r => r.id && r.id.length >= 10);
   });
-  const [companies, setCompanies] = useState<Company[]>(() => loadStoredData('shatibha_companies_v4', initialCompanies));
-  const [offers, setOffers] = useState<Offer[]>(() => loadStoredData('shatibha_offers_v4', initialOffers));
-  const [contracts, setContracts] = useState<Contract[]>(() => loadStoredData('shatibha_contracts_v4', initialContracts));
-  const [inspectors, setInspectors] = useState<Inspector[]>(() => loadStoredData('shatibha_inspectors_v4', initialInspectors));
-  const [stages, setStages] = useState<ProjectStage[]>(() => loadStoredData('shatibha_stages_v4', initialProjectStages));
-  const [notifications, setNotifications] = useState<Notification[]>(() => loadStoredData('shatibha_notifications_v4', initialNotifications));
+  const [companies, setCompanies] = useState<Company[]>(() => {
+    const loaded = loadStoredData('shatibha_companies_v4', initialCompanies);
+    return loaded.filter(c => c.id && c.id.length >= 10);
+  });
+  const [offers, setOffers] = useState<Offer[]>(() => {
+    const loaded = loadStoredData('shatibha_offers_v4', initialOffers);
+    return loaded.filter(o => o.id && o.id.length >= 10);
+  });
+  const [contracts, setContracts] = useState<Contract[]>(() => {
+    const loaded = loadStoredData('shatibha_contracts_v4', initialContracts);
+    return loaded.filter(c => c.id && c.id.length >= 10);
+  });
+  const [inspectors, setInspectors] = useState<Inspector[]>(() => {
+    const loaded = loadStoredData('shatibha_inspectors_v4', initialInspectors);
+    return loaded.filter(i => i.id && i.id.length >= 10);
+  });
+  const [stages, setStages] = useState<ProjectStage[]>(() => {
+    const loaded = loadStoredData('shatibha_stages_v4', initialProjectStages);
+    return loaded.filter(s => s.id && s.id.length >= 10);
+  });
+  const [notifications, setNotifications] = useState<Notification[]>(() => {
+    const loaded = loadStoredData('shatibha_notifications_v4', initialNotifications);
+    return loaded.filter(n => n.id && n.id.length >= 10);
+  });
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>(() => loadStoredData('shatibha_promo_codes_v4', initialPromoCodes));
 
   // Expanded workflows & persistence states
-  const [warranties, setWarranties] = useState<WarrantyRecord[]>(() => loadStoredData('shatibha_warranties_v4', initialWarrantyRecords));
-  const [complaints, setComplaints] = useState<WarrantyComplaint[]>(() => loadStoredData('shatibha_complaints_v4', initialWarrantyComplaints));
-  const [auditLogs, setAuditLogs] = useState<AuditLog[]>(() => loadStoredData('shatibha_audit_logs_v4', initialAuditLogs));
+  const [warranties, setWarranties] = useState<WarrantyRecord[]>(() => {
+    const loaded = loadStoredData('shatibha_warranties_v4', initialWarrantyRecords);
+    return loaded.filter(w => w.id && w.id.length >= 10);
+  });
+  const [complaints, setComplaints] = useState<WarrantyComplaint[]>(() => {
+    const loaded = loadStoredData('shatibha_complaints_v4', initialWarrantyComplaints);
+    return loaded.filter(c => c.id && c.id.length >= 10);
+  });
+  const [auditLogs, setAuditLogs] = useState<AuditLog[]>(() => {
+    const loaded = loadStoredData('shatibha_audit_logs_v4', initialAuditLogs);
+    return loaded.filter(l => l.id && l.id.length >= 10);
+  });
 
   // --- EMAIL NOTIFICATION SIMULATION STATES ---
   const [simulatedEmails, setSimulatedEmails] = useState<any[]>(() => {
@@ -2251,6 +2277,7 @@ setStages(prev => {
             stages={stages}
             onUpdateStage={handleUpdateStage}
             lang={lang}
+            setLang={setLang}
             onSignOut={handleSignOut}
             promoCodes={promoCodes}
             warranties={warranties}
@@ -2274,6 +2301,7 @@ setStages(prev => {
             stages={stages}
             onUpdateStage={handleUpdateStage}
             lang={lang}
+            setLang={setLang}
             contracts={contracts}
             onUpdateRequest={handleUpdateRequest}
             onSignOut={handleSignOut}
@@ -2293,6 +2321,7 @@ setStages(prev => {
             stages={stages}
             onUpdateStage={handleUpdateStage}
             lang={lang}
+            setLang={setLang}
             onUpdateRequest={handleUpdateRequest}
             onSignOut={handleSignOut}
             warranties={warranties}

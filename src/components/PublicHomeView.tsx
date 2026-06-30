@@ -404,7 +404,9 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
         governorates: selectedGovernorates,
         cities: ['القاهرة الجديدة', 'الشيخ زايد', 'مدينة نصر'],
         rating: 5.0,
-        projectsCompleted: 0
+        projectsCompleted: 0,
+        email: companyEmail,
+        phone: companyPhone
       };
       
       onAddCompany(newCompany);
