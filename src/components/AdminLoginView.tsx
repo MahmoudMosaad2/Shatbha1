@@ -16,10 +16,20 @@ export const AdminLoginView: React.FC<AdminLoginViewProps> = ({ onLogin, lang, o
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email === 'admin@shattabha.com') {
-      onLogin('ADMIN');
-    } else if (email === 'inspector@shattabha.com') {
-      onLogin('INSPECTOR');
+    const cleanEmail = email.trim().toLowerCase();
+    
+    if (cleanEmail === 'admin@shattabha.com') {
+      if (password === 'admin123456' || password === '12345678' || password === 'admin123') {
+        onLogin('ADMIN');
+      } else {
+        setError(isEn ? 'Incorrect password. Please use admin123456' : 'كلمة المرور غير صحيحة. يرجى استخدام كلمة المرور admin123456');
+      }
+    } else if (cleanEmail === 'inspector@shattabha.com') {
+      if (password === 'inspector123456' || password === '12345678') {
+        onLogin('INSPECTOR');
+      } else {
+        setError(isEn ? 'Incorrect password. Use 12345678' : 'كلمة المرور غير صحيحة. استخدم 12345678');
+      }
     } else {
       setError(isEn ? 'Invalid credentials' : 'بيانات الدخول غير صحيحة');
     }
@@ -96,11 +106,31 @@ export const AdminLoginView: React.FC<AdminLoginViewProps> = ({ onLogin, lang, o
             </button>
           </form>
 
-          <div className="mt-6 pt-4 border-t border-slate-100 text-center text-[10px] text-slate-400 font-medium">
-            <p>Demo Credentials (Any password works):</p>
-            <div className="flex gap-4 justify-center mt-2" dir="ltr">
-               <button type="button" onClick={() => setEmail('admin@shattabha.com')} className="font-mono bg-slate-100 p-1 px-2 rounded hover:bg-slate-200 text-slate-600 transition-colors cursor-pointer">admin@...</button>
-               <button type="button" onClick={() => setEmail('inspector@shattabha.com')} className="font-mono bg-slate-100 p-1 px-2 rounded hover:bg-slate-200 text-slate-600 transition-colors cursor-pointer">inspector@...</button>
+          <div className="mt-6 pt-4 border-t border-slate-100 text-center text-[11px] text-slate-400 font-medium">
+            <p className="text-slate-500 font-bold mb-2">
+              {isEn ? '🔑 Direct Administration Entry Details:' : '🔑 بيانات الدخول المعتمدة للإدارة لمتابعة وفحص الطلبات:'}
+            </p>
+            <div className="space-y-2 bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-right" dir={isEn ? "ltr" : "rtl"}>
+              <div className="flex justify-between items-center text-[10.5px]">
+                <span className="font-bold text-slate-600">{isEn ? 'Admin Account:' : 'حساب الإدارة / الأدمن:'}</span>
+                <button 
+                  type="button" 
+                  onClick={() => { setEmail('admin@shattabha.com'); setPassword('admin123456'); setError(''); }} 
+                  className="font-mono bg-white hover:bg-slate-100 p-1 px-2 border border-slate-250 rounded text-[10px] text-slate-700 transition-colors cursor-pointer font-bold"
+                >
+                  admin@shattabha.com (PW: admin123456)
+                </button>
+              </div>
+              <div className="flex justify-between items-center text-[10.5px]">
+                <span className="font-bold text-slate-600">{isEn ? 'Inspector Account:' : 'حساب المشرف الفني:'}</span>
+                <button 
+                  type="button" 
+                  onClick={() => { setEmail('inspector@shattabha.com'); setPassword('12345678'); setError(''); }} 
+                  className="font-mono bg-white hover:bg-slate-100 p-1 px-2 border border-slate-250 rounded text-[10px] text-slate-700 transition-colors cursor-pointer font-bold"
+                >
+                  inspector@shattabha.com (PW: 12345678)
+                </button>
+              </div>
             </div>
           </div>
         </div>

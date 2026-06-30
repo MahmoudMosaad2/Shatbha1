@@ -2769,7 +2769,7 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
                     console.error('Firebase sign in failed:', err);
                     const isDemo = email === 'admin@shattabha.com' || email.includes('admin') || email.includes('inspector') || email.includes('luxspace') || email === 'ahmed.rashidy@gmail.com' || email === 'client@shattabha.com';
                     
-                    if (isDemo && loginPassword === '12345678') {
+                    if (isDemo && (loginPassword === '12345678' || loginPassword === 'admin123456')) {
                       let role: 'CLIENT' | 'COMPANY' | 'ADMIN' | 'INSPECTOR' = 'CLIENT';
                       if (email === 'admin@shattabha.com' || email.includes('admin')) {
                         role = 'ADMIN';
@@ -3234,25 +3234,21 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
 
             {compSuccessMsg ? (
               <div className="p-6 text-center space-y-4">
-                <div className="w-14 h-14 bg-amber-50 text-amber-500 flex items-center justify-center rounded-full text-2xl mx-auto animate-pulse">⏳</div>
-                <h4 className="font-black text-[#2B4D89] text-base">{isEn ? 'Application Under Audit!' : 'طلب تسجيل الشركة رهن الفحص الفني!'}</h4>
-                <p className="text-xs text-gray-500">
+                <div className="w-14 h-14 bg-emerald-50 text-emerald-500 flex items-center justify-center rounded-full text-2xl mx-auto animate-bounce">✓</div>
+                <h4 className="font-black text-emerald-600 text-base">
+                  {isEn ? 'Application Submitted Successfully!' : 'تم تقديم طلب التسجيل بنجاح!'}
+                </h4>
+                <p className="text-xs text-gray-600 leading-relaxed">
                   {isEn 
-                    ? 'Your status remains "PENDING APPROVED." Please enter as "ADMIN" Dashboard from fast login demo shortcut helper to instantly approve your papers!' 
-                    : 'حالة شركتك الحالية هي "طلب معلق بانتظار الاعتماد". يمكنك الانتقال الآن فوراً وبلمسة واحدة إلى لوحة تحكم الإدارة (الأدمن) من زر الدخول السريع بالموقع، والموافقة على أوراق شركتك لتبدأ تقديم عروض الأسعار ونماذج خاماتك فوراً!'}
+                    ? 'Thank you for registering with Shattabha. Your company profile is now under review. Our engineering audit committee will verify your commercial register and tax card within 24 hours. You will receive an email notification as soon as your account is approved and activated.' 
+                    : 'نشكركم على الانضمام لمنصة شطبها. تم استلام ملف شركتكم الفني وهو الآن قيد الفحص والمراجعة الدقيقة. ستقوم اللجنة الهندسية المختصة بالتحقق من السجل التجاري والبطاقة الضريبية وتفعيل حسابكم خلال 24 ساعة، وسيتم إرسال إشعار فوري لبريدكم الإلكتروني المعتمد بمجرد إتمام التفعيل لتتمكنوا من الدخول وتقديم عروض الأسعار للعملاء.'}
                 </p>
-                <div className="flex gap-2">
-                  <button 
-                    onClick={() => { setModalType('NONE'); setCompSuccessMsg(false); onNavigateToDashboard('ADMIN'); }}
-                    className="flex-1 bg-emerald-600 text-white font-bold py-2.5 rounded-xl text-xs"
-                  >
-                    {isEn ? 'Go to Admin Console' : 'الذهاب للإدارة للموافقة 🛡️'}
-                  </button>
+                <div className="pt-2">
                   <button 
                     onClick={() => { setModalType('NONE'); setCompSuccessMsg(false); }}
-                    className="flex-1 bg-gray-100 text-gray-600 font-bold py-2.5 rounded-xl text-xs"
+                    className="w-full bg-[#2B4D89] hover:bg-[#2B4D89]/90 text-white font-black py-2.5 rounded-xl text-xs transition-all cursor-pointer shadow-sm"
                   >
-                    {isEn ? 'Close' : 'إغلاق'}
+                    {isEn ? 'Back to Homepage' : 'العودة للرئيسية'}
                   </button>
                 </div>
               </div>
