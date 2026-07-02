@@ -41,6 +41,7 @@ import {
   Send,
   Globe,
   LogOut,
+  Trash2,
 } from "lucide-react";
 import {
   ClientRequest,
@@ -109,6 +110,7 @@ interface AdminDashboardViewProps {
   auditLogs?: AuditLog[];
   notifications?: Notification[];
   onUpdateNotifications?: (updatedList: Notification[]) => void;
+  onClearAllRequests?: () => void;
 }
 
 interface ProjectInteractiveTimelineProps {
@@ -599,6 +601,7 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
   auditLogs: systemAuditLogs = [],
   notifications = [],
   onUpdateNotifications,
+  onClearAllRequests,
 }) => {
   const isEn = lang === "en";
 
@@ -902,6 +905,7 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
     "PROJECTS" | "USERS" | "FINANCE"
   >("PROJECTS");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showClearConfirmModal, setShowClearConfirmModal] = useState(false);
 
   const [notifFilter, setNotifFilter] = useState<"ALL" | "COMPLAINTS" | "REGISTRATIONS">("ALL");
 
@@ -3775,18 +3779,20 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                           : "توليد الرسوم البيانية المتكاملة ومؤشرات قياس الأداء لعرضها وتصديرها كـ PDF"}
                       </p>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setIsExecutiveReportModalOpen(true)}
-                      className="bg-[#2B4D89] text-white hover:bg-[#2B4D89]/90 px-4 py-2.5 text-xs font-black rounded-xl transition-all flex items-center gap-2 cursor-pointer shadow-sm shrink-0"
-                    >
-                      <Printer className="w-3.5 h-3.5 text-[#D8B448]" />
-                      <span>
-                        {isEn
-                          ? "Export Executive Dashboard PDF 📄"
-                          : "تصدير لوحة البيانات كـ PDF 📄"}
-                      </span>
-                    </button>
+                    <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto shrink-0 justify-end">
+                      <button
+                        type="button"
+                        onClick={() => setIsExecutiveReportModalOpen(true)}
+                        className="bg-[#2B4D89] text-white hover:bg-[#2B4D89]/90 px-4 py-2.5 text-xs font-black rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm shrink-0"
+                      >
+                        <Printer className="w-3.5 h-3.5 text-[#D8B448]" />
+                        <span>
+                          {isEn
+                            ? "Export Executive Dashboard PDF 📄"
+                            : "تصدير لوحة البيانات كـ PDF 📄"}
+                        </span>
+                      </button>
+                    </div>
                   </div>
 
                   {/* ⚡ BENTO PIPELINE SPEED & GROWTH CHARTS BANNER */}
@@ -24691,6 +24697,8 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
               </div>
             </div>
           )}
+
+
 
           {/* 👷 MODAL 4: ADD/EDIT FIELD INSPECTOR */}
           {isInspectorModalOpen && (

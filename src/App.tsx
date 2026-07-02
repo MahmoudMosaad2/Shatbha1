@@ -1141,8 +1141,10 @@ export default function App() {
     setStages([]);
     setOffers([]);
     setContracts([]);
-    logAudit('ALL', 'المختبر', 'TESTER', 'تم مسح كافة طلبات التشطيب المفتوحة لمباشرة تجارب نظيفة فريدة', 'Cleared all finishing requests to start a clean testing flow', 'Erased all requests, active projects, escrow stages, and bids');
-    showToast('🧹 تم مسح كافة طلبات التشطيب والعروض والمشاريع السابقة بنجاح! انتقل الآن للموقع العام أو لوحة العميل لإرسال طلب جديد من الصفر.');
+    setWarranties([]);
+    setComplaints([]);
+    logAudit('ALL', 'المختبر', 'TESTER', 'تم مسح وتصفير كافة طلبات التشطيب والمشاريع والضمانات والشكاوى لمباشرة تجارب جديدة نظيفة', 'Cleared all finishing requests, active projects, escrow stages, warranties, complaints, and bids to start a clean testing flow', 'Erased all requests, active projects, escrow stages, warranties, complaints, and bids');
+    showToast('🧹 تم مسح وتصفير كافة طلبات التشطيب، العروض، المشاريع، الضمانات، والشكاوى السابقة بنجاح! يمكنك الآن بدء تقديم طلبات جديدة تماماً من الصفر.');
   };
 
 
@@ -2364,6 +2366,7 @@ setStages(prev => {
             onLogAudit={logAudit}
             notifications={notifications}
             onUpdateNotifications={setNotifications}
+            onClearAllRequests={handleClearAllRequests}
           />
         )}
 
