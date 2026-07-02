@@ -1160,8 +1160,16 @@ export default function App() {
     setContracts([]);
     setWarranties([]);
     setComplaints([]);
-    logAudit('ALL', 'المختبر', 'TESTER', 'تم مسح وتصفير كافة طلبات التشطيب والمشاريع والضمانات والشكاوى لمباشرة تجارب جديدة نظيفة', 'Cleared all finishing requests, active projects, escrow stages, warranties, complaints, and bids to start a clean testing flow', 'Erased all requests, active projects, escrow stages, warranties, complaints, and bids');
-    showToast('🧹 تم مسح وتصفير كافة طلبات التشطيب، العروض، المشاريع، الضمانات، والشكاوى السابقة بنجاح! يمكنك الآن بدء تقديم طلبات جديدة تماماً من الصفر.');
+    setNotifications([]);
+    localStorage.removeItem('shatibha_requests_v4');
+    localStorage.removeItem('shatibha_stages_v4');
+    localStorage.removeItem('shatibha_offers_v4');
+    localStorage.removeItem('shatibha_contracts_v4');
+    localStorage.removeItem('shatibha_warranties_v4');
+    localStorage.removeItem('shatibha_complaints_v4');
+    localStorage.removeItem('shatibha_notifications_v4');
+    logAudit('ALL', 'المختبر', 'TESTER', 'تم مسح وتصفير كافة طلبات التشطيب والمشاريع والضمانات والشكاوى والإشعارات لمباشرة تجارب جديدة نظيفة', 'Cleared all finishing requests, active projects, escrow stages, warranties, complaints, notifications, and bids to start a clean testing flow', 'Erased all requests, active projects, escrow stages, warranties, complaints, notifications, and bids');
+    showToast('🧹 تم تصفير كافة طلبات التشطيب، العروض، المشاريع، التنبيهات، والشكاوى بنجاح! يمكنك الآن بدء العمل وتجربة تقديم طلبات جديدة تماماً.');
   };
 
 

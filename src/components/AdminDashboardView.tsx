@@ -2579,6 +2579,18 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
               <span>{isEn ? 'العربية' : 'English'}</span>
             </button>
           )}
+          {onClearAllRequests && (
+            <button
+              onClick={() => {
+                if (window.confirm(isEn ? 'Are you sure you want to clear all requests, projects, and notifications?' : 'هل أنت متأكد من رغبتك في تصفير كافة طلبات التشطيب، المشاريع، والاشعارات بالكامل؟ لا يمكن التراجع عن هذا الإجراء.')) {
+                  onClearAllRequests();
+                }
+              }}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-red-600/10 text-red-400 border border-red-600/20 text-[11px] font-black hover:bg-red-600/20 transition-all cursor-pointer"
+            >
+              <span>{isEn ? 'Reset All 🧹' : 'تصفير الكل 🧹'}</span>
+            </button>
+          )}
           {onSignOut && (
             <button
               onClick={onSignOut}
@@ -2739,6 +2751,19 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
               >
                 <Globe className="w-3.5 h-3.5 text-[#D8B448]" />
                 <span>{isEn ? 'العربية' : 'English'}</span>
+              </button>
+            )}
+            {onClearAllRequests && (
+              <button
+                onClick={() => {
+                  if (window.confirm(isEn ? 'Are you sure you want to clear all requests, projects, and notifications?' : 'هل أنت متأكد من رغبتك في تصفير كافة طلبات التشطيب، المشاريع، والاشعارات بالكامل؟ لا يمكن التراجع عن هذا الإجراء.')) {
+                    onClearAllRequests();
+                  }
+                }}
+                className="bg-red-600/10 hover:bg-red-600/20 text-red-400 border border-red-600/30 px-4 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>🧹</span>
+                <span>{isEn ? "Reset Platform" : "تصفير المنصة (طلبات وتنبيهات)"}</span>
               </button>
             )}
             <div className="bg-[#151D2A]/60 px-3.5 py-1.5 rounded-full border border-gray-700 text-xs font-bold text-[#D8B448]">
