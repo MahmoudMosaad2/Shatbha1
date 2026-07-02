@@ -31,11 +31,17 @@ export const SiteInspectorDashboardView: React.FC<SiteInspectorDashboardViewProp
   const isEn = lang === 'en';
   // Toggle between inspectors using a local simulator state
   const [activeInspectorId, setActiveInspectorId] = useState<string>(() => {
-    const loggedEmail = localStorage.getItem('shattabba_client_email') || '';
-    if (loggedEmail.toLowerCase().includes('khaled')) {
+    const loggedEmail = (localStorage.getItem('shattabba_client_email') || '').toLowerCase();
+    if (loggedEmail.includes('khaled')) {
       return 'INS-KHALED';
     }
-    const found = inspectors.find(i => i.email?.toLowerCase() === loggedEmail.toLowerCase());
+    if (loggedEmail.includes('youssef') || loggedEmail.includes('yousef')) {
+      return 'INS-YOUSSEF';
+    }
+    if (loggedEmail.includes('ibrahim') || loggedEmail.includes('ebrahim')) {
+      return 'INS-IBRAHIM';
+    }
+    const found = inspectors.find(i => i.email?.toLowerCase() === loggedEmail);
     if (found) return found.id;
     return inspectors[0]?.id || 'INS-KHALED';
   });
@@ -1290,18 +1296,6 @@ export const SiteInspectorDashboardView: React.FC<SiteInspectorDashboardViewProp
                 ))}
               </div>
             </div>
-
-            <button
-              onClick={() => {
-                if (onSignOut) {
-                  onSignOut();
-                }
-              }}
-              className="bg-red-500/10 hover:bg-red-500/18 text-[#E05252] border border-red-500/25 hover:border-red-500/40 px-4 py-3 rounded-2xl text-xs font-black transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-xs"
-            >
-              <span>🚪</span>
-              <span>{isEn ? 'Sign Out Securely' : 'تسجيل الخروج (Sign out)'}</span>
-            </button>
           </div>
         </div>
       </div>

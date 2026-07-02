@@ -805,7 +805,7 @@ export const ClientDashboardView: React.FC<ClientDashboardViewProps> = ({
             </div>
           </div>
 
-          {/* Action Buttons: Sign Out and Edit settings on Mobile */}
+          {/* Action Buttons: Edit settings on Mobile */}
           <div className="flex flex-row items-center justify-center md:justify-end gap-2 w-full md:w-auto mt-2 md:mt-0 pt-3 md:pt-0 border-t md:border-t-0 border-gray-100">
             <button 
               onClick={() => setIsProfileSettingsOpen(true)}
@@ -813,18 +813,6 @@ export const ClientDashboardView: React.FC<ClientDashboardViewProps> = ({
             >
               <span>⚙️</span>
               <span>{isEn ? 'Edit Profile' : 'تعديل الملف'}</span>
-            </button>
-            
-            <button
-              onClick={() => {
-                if (onSignOut) {
-                  onSignOut();
-                }
-              }}
-              className="flex-1 sm:flex-none bg-red-50 hover:bg-red-100 text-rose-600 border border-red-150 px-3.5 py-1.5 rounded-xl text-[11px] font-bold transition-all flex items-center justify-center gap-1 cursor-pointer shadow-2xs"
-            >
-              <span>🚪</span>
-              <span>{isEn ? 'Sign Out' : 'تسجيل الخروج'}</span>
             </button>
           </div>
         </div>

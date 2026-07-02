@@ -2797,12 +2797,20 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
                     } else {
                       const foundComp = companies.find(c => c.email?.toLowerCase() === email);
                       const isKhaled = email.includes('khaled');
+                      const isYoussef = email.includes('youssef') || email.includes('yousef');
+                      const isIbrahim = email.includes('ibrahim') || email.includes('ebrahim');
+                      const isInspector = email === 'inspector@shattabha.com' || email.includes('inspector') || isKhaled || isYoussef || isIbrahim;
+                      
                       if (email === 'admin@shattabha.com' || email.includes('admin')) {
                         role = 'ADMIN';
-                      } else if (email === 'inspector@shattabha.com' || email.includes('inspector') || isKhaled) {
+                      } else if (isInspector) {
                         role = 'INSPECTOR';
                         localStorage.setItem('shattabba_client_email', email);
-                        localStorage.setItem('shattabba_client_name', isKhaled ? 'المهندس خالد عبد الرحمن' : 'المهندس أحمد مصطفى');
+                        let inspName = 'المهندس أحمد مصطفى';
+                        if (isKhaled) inspName = 'المهندس خالد عبد الرحمن';
+                        else if (isYoussef) inspName = 'المهندس يوسف أحمد';
+                        else if (isIbrahim) inspName = 'المهندس إبراهيم حسن';
+                        localStorage.setItem('shattabba_client_name', inspName);
                       } else if (foundComp || email.includes('luxspace')) {
                         role = 'COMPANY';
                         const compName = foundComp ? foundComp.companyName : 'لوكس سبيس للتصميم والتشطيب';
@@ -2821,16 +2829,23 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
                     console.error('Firebase sign in failed:', err);
                     const foundComp = companies.find(c => c.email?.toLowerCase() === email);
                     const isKhaled = email.includes('khaled');
-                    const isDemo = email === 'admin@shattabha.com' || email.includes('admin') || email.includes('inspector') || email.includes('luxspace') || email === 'ahmed.rashidy@gmail.com' || email === 'client@shattabha.com' || !!foundComp || isKhaled;
+                    const isYoussef = email.includes('youssef') || email.includes('yousef');
+                    const isIbrahim = email.includes('ibrahim') || email.includes('ebrahim');
+                    const isInspector = email === 'inspector@shattabha.com' || email.includes('inspector') || isKhaled || isYoussef || isIbrahim;
+                    const isDemo = email === 'admin@shattabha.com' || email.includes('admin') || isInspector || email.includes('luxspace') || email === 'ahmed.rashidy@gmail.com' || email === 'client@shattabha.com' || !!foundComp;
                     
                     if (isDemo) {
                       let role: 'CLIENT' | 'COMPANY' | 'ADMIN' | 'INSPECTOR' = 'CLIENT';
                       if (email === 'admin@shattabha.com' || email.includes('admin')) {
                         role = 'ADMIN';
-                      } else if (email === 'inspector@shattabha.com' || email.includes('inspector') || isKhaled) {
+                      } else if (isInspector) {
                         role = 'INSPECTOR';
                         localStorage.setItem('shattabba_client_email', email);
-                        localStorage.setItem('shattabba_client_name', isKhaled ? 'المهندس خالد عبد الرحمن' : 'المهندس أحمد مصطفى');
+                        let inspName = 'المهندس أحمد مصطفى';
+                        if (isKhaled) inspName = 'المهندس خالد عبد الرحمن';
+                        else if (isYoussef) inspName = 'المهندس يوسف أحمد';
+                        else if (isIbrahim) inspName = 'المهندس إبراهيم حسن';
+                        localStorage.setItem('shattabba_client_name', inspName);
                       } else if (foundComp || email.includes('luxspace')) {
                         role = 'COMPANY';
                         const compName = foundComp ? foundComp.companyName : 'لوكس سبيس للتصميم والتشطيب';

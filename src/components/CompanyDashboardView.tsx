@@ -1000,18 +1000,6 @@ ${(activeCompany.packages || []).map((p: any, idx: number) => `\n[${idx + 1}] ب
             <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span>
             {isEn ? 'Subbidding Active' : 'حساب العطاءات نشط'}
           </div>
-
-          <button
-            onClick={() => {
-              if (onSignOut) {
-                onSignOut();
-              }
-            }}
-            className="bg-red-500/10 hover:bg-red-500/18 text-[#E05252] border border-red-500/25 hover:border-red-500/40 px-4 py-2.5 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer shadow-xs"
-          >
-            <span>🚪</span>
-            <span>{isEn ? 'Sign Out Securely' : 'تسجيل الخروج (Sign out)'}</span>
-          </button>
         </div>
       </div>
 

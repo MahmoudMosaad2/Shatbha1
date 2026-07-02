@@ -197,7 +197,7 @@ export default function App() {
   });
   const [companies, setCompanies] = useState<Company[]>(() => {
     const loaded = loadStoredData('shatibha_companies_v4', initialCompanies);
-    return loaded.filter(c => c.id && c.id.length > 0);
+    return loaded.filter(c => c.id && c.id.length > 0 && c.companyName?.trim().toUpperCase() !== 'DSC');
   });
   const [offers, setOffers] = useState<Offer[]>(() => {
     const loaded = loadStoredData('shatibha_offers_v4', initialOffers);
@@ -209,9 +209,9 @@ export default function App() {
   });
   const [inspectors, setInspectors] = useState<Inspector[]>(() => {
     const loaded = loadStoredData('shatibha_inspectors_v4', initialInspectors);
-    const filtered = loaded.filter(i => i.id && i.id.length > 0);
+    let filtered = loaded.filter(i => i.id && i.id.length > 0);
     if (!filtered.some(i => i.id === 'INS-KHALED')) {
-      filtered.unshift({
+      filtered.push({
         id: 'INS-KHALED',
         name: 'المهندس خالد عبد الرحمن',
         governorate: 'القاهرة',
@@ -224,6 +224,38 @@ export default function App() {
         responseSpeedRating: 4.9,
         reportAccuracyRating: 4.8,
         totalEvaluationsCount: 14
+      });
+    }
+    if (!filtered.some(i => i.id === 'INS-YOUSSEF')) {
+      filtered.push({
+        id: 'INS-YOUSSEF',
+        name: 'المهندس يوسف أحمد',
+        governorate: 'القاهرة',
+        zone: 'مصر الجديدة',
+        activeProjectsCount: 0,
+        phone: '01003344556',
+        status: 'ACTIVE',
+        password: '12345678',
+        stagesSpecialties: ['السباكة', 'الكهرباء', 'المحارة', 'الدهانات'],
+        responseSpeedRating: 4.8,
+        reportAccuracyRating: 4.7,
+        totalEvaluationsCount: 8
+      });
+    }
+    if (!filtered.some(i => i.id === 'INS-IBRAHIM')) {
+      filtered.push({
+        id: 'INS-IBRAHIM',
+        name: 'المهندس إبراهيم حسن',
+        governorate: 'الجيزة',
+        zone: 'المهندسين',
+        activeProjectsCount: 0,
+        phone: '01004455667',
+        status: 'ACTIVE',
+        password: '12345678',
+        stagesSpecialties: ['المحارة', 'الدهانات', 'الأرضيات', 'الديكور'],
+        responseSpeedRating: 4.7,
+        reportAccuracyRating: 4.9,
+        totalEvaluationsCount: 12
       });
     }
     return filtered;

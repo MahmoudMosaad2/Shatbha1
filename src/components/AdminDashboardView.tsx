@@ -2771,15 +2771,6 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                 ? "Role: Administrator Manager"
                 : "الصلاحية: مدير المنصة العام"}
             </div>
-            {onSignOut && (
-              <button
-                onClick={onSignOut}
-                className="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-4 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-                <span>{isEn ? "Sign Out" : "تسجيل الخروج"}</span>
-              </button>
-            )}
           </div>
         </div>
 
