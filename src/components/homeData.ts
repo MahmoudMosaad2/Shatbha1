@@ -162,9 +162,9 @@ export const HOME_FEATURED_PROJECTS: FeaturedProject[] = [
     descAr: 'إعادة تهيئة كاملة مع توير توزيع لوحات الكهرباء لخدمة غرف الخوادم، جدران وحوائط عازلة للصوت والحرارة، دهانات فينوماستيك جوتن لمقاومة الاحتكاك وسهولة التنظيف وواجهة إضاءة ممتازة.',
     descEn: 'A fully integrated smart office layout with dedicated heavy-duty power lines for high-density server rooms, acoustic isolation partitions, anti-scratch Jotun coating, and verified architectural layouts.',
     images: [
-      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1617806118233-18e1db207f62?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1600121848594-d8644e57abab?w=800&auto=format&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=800&auto=format&fit=crop&q=80'
     ]
   }
 ];

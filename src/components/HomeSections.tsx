@@ -26,7 +26,9 @@ import {
   Search,
   CheckSquare,
   AlertTriangle,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Home,
+  Briefcase
 } from 'lucide-react';
 import { ShattabhaLogo } from './ShattabhaLogo';
 
@@ -81,82 +83,79 @@ export const HowShattabhaWorks: React.FC<HowShattabhaWorksProps> = ({ isEn, howI
           </motion.p>
         </div>
 
-        {/* Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 pt-4 relative">
-          
-          {/* Dash line in background for desktop only */}
-          <div className="absolute top-[40px] left-[10%] right-[10%] h-[2px] border-t-2 border-dashed border-[#2B4D89]/15 hidden md:block z-0" />
+        {/* Cards Grid with horizontal scrolling on mobile and compact sizes */}
+        <div className="relative">
+          <div 
+            className="flex md:grid md:grid-cols-5 gap-4 overflow-x-auto md:overflow-x-visible snap-x snap-mandatory pb-4 md:pb-0 px-4 -mx-4 md:px-0 md:mx-0 scrollbar-none relative z-10 scroll-smooth"
+            dir={isEn ? 'ltr' : 'rtl'}
+          >
+            {/* Dash line in background for desktop only */}
+            <div className="absolute top-[35px] left-[10%] right-[10%] h-[2px] border-t-2 border-dashed border-[#2B4D89]/15 hidden md:block z-0 pointer-events-none" />
 
-          {howItWorksSteps.map((step, idx) => {
-            const StepIcon = step.icon;
-            
-            const stepLabelsAr = [
-              'خطوتك الأولى والمواصفات',
-              'فحص وتوزيع المناقصة كتم',
-              'مقارنة الخامات شفافة',
-              'تعاقد ثلاثي مع المنصة',
-              'فحص أصول وقبول الدفعة'
-            ];
-            const stepLabelsEn = [
-              'Specifications Input',
-              'Blind Tender Distribution',
-              'Transparent Comparison',
-              'Tripartite Smart Bond',
-              'Site Audit Sign-Off'
-            ];
+            {howItWorksSteps.map((step, idx) => {
+              const StepIcon = step.icon;
+              
+              const stepLabelsAr = [
+                'خطوتك الأولى والمواصفات',
+                'فحص وتوزيع المناقصة كتم',
+                'مقارنة الخامات شفافة',
+                'تعاقد ثلاثي مع المنصة',
+                'فحص أصول وقبول الدفعة'
+              ];
+              const stepLabelsEn = [
+                'Specifications Input',
+                'Blind Tender Distribution',
+                'Transparent Comparison',
+                'Tripartite Smart Bond',
+                'Site Audit Sign-Off'
+              ];
 
-            return (
-              <motion.div 
-                key={step.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                whileHover={{ y: -8, transition: { duration: 0.3 } }}
-                className="relative bg-white border border-slate-150 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between z-10 text-right group self-stretch"
-                dir={isEn ? 'ltr' : 'rtl'}
-              >
-                {/* Header background with deep blue to teal gradients */}
-                <div className="bg-gradient-to-br from-[#1E3254] to-[#2B4D89] p-5 text-white space-y-3 relative overflow-hidden">
-                  <div className="absolute -right-6 -bottom-6 w-16 h-16 rounded-full bg-[#D8B448]/5 blur-lg pointer-events-none group-hover:scale-125 transition-transform" />
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="w-10 h-10 rounded-xl bg-white/10 text-[#D8B448] flex items-center justify-center shadow-inner group-hover:bg-[#D8B448] group-hover:text-white transition-all duration-300">
-                      <StepIcon className="w-5 h-5 shrink-0 transition-transform duration-500 group-hover:rotate-12" />
-                    </div>
+              return (
+                <motion.div 
+                  key={step.id}
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.35, delay: idx * 0.06 }}
+                  whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                  className="relative bg-white border border-slate-150 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col z-10 text-right group self-stretch w-[210px] min-[360px]:w-[225px] min-[400px]:w-[240px] md:w-auto shrink-0 snap-center"
+                  dir={isEn ? 'ltr' : 'rtl'}
+                >
+                  {/* Header background with deep blue to teal gradients - Extra Compact */}
+                  <div className="bg-gradient-to-br from-[#1E3254] to-[#2B4D89] p-3 text-white space-y-1.5 relative overflow-hidden">
+                    <div className="absolute -right-6 -bottom-6 w-12 h-12 rounded-full bg-[#D8B448]/5 blur-md pointer-events-none group-hover:scale-125 transition-transform" />
                     
-                    <span className="text-xl font-black text-white/50 group-hover:text-[#D8B448] transition-colors font-mono">
-                      {isEn ? `0${step.id}` : `٠${step.id}`}
-                    </span>
+                    {/* Compact row: Number + Logo + First sentence label */}
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <div className="flex items-center text-sm font-black text-[#D8B448] font-mono shrink-0">
+                        <span>{step.id}</span>
+                        <span>.</span>
+                      </div>
+                      
+                      <div className="w-5 h-5 rounded bg-white/10 text-[#D8B448] flex items-center justify-center shrink-0">
+                        <StepIcon className="w-3 h-3 shrink-0" />
+                      </div>
+
+                      <span className="text-[9px] font-black tracking-wide bg-white/15 text-[#D8B448] border border-white/5 px-1.5 py-0.5 rounded whitespace-nowrap overflow-hidden text-ellipsis max-w-[140px] sm:max-w-none">
+                        {isEn ? stepLabelsEn[idx] : stepLabelsAr[idx]}
+                      </span>
+                    </div>
+
+                    <h3 className="text-xs font-black text-white leading-snug group-hover:text-[#D8B448] transition-colors pt-0.5">
+                      {isEn ? step.titleEn : step.titleAr}
+                    </h3>
                   </div>
 
-                  <div className="inline-block mt-1">
-                    <span className="text-[10px] font-black tracking-wide bg-white/10 text-[#D8B448] border border-white/5 px-2 py-0.5 rounded">
-                      {isEn ? stepLabelsEn[idx] : stepLabelsAr[idx]}
-                    </span>
+                  {/* Body details - Compact, no footer */}
+                  <div className="p-3 flex-1 flex flex-col justify-start bg-slate-50/50">
+                    <p className="text-slate-600 text-[10px] sm:text-[11px] font-bold leading-relaxed">
+                      {isEn ? step.descEn : step.descAr}
+                    </p>
                   </div>
-
-                  <h3 className="text-sm font-black text-white leading-snug group-hover:text-[#D8B448] transition-colors pt-1">
-                    {isEn ? step.titleEn : step.titleAr}
-                  </h3>
-                </div>
-
-                {/* Body details */}
-                <div className="p-5 flex-1 flex flex-col justify-between space-y-4 bg-slate-50/50">
-                  <p className="text-slate-600 text-xs font-bold leading-relaxed">
-                    {isEn ? step.descEn : step.descAr}
-                  </p>
-
-                  <div className="pt-3 border-t border-slate-200/65 flex items-center justify-between text-[11px]">
-                    <span className="text-[#2B4D89] font-black tracking-wide">
-                      {isEn ? 'Escrow Protection Active' : 'مؤمن بحساب الضمان 🔒'}
-                    </span>
-                    <span className="w-6 h-1.5 rounded-full bg-slate-200 group-hover:bg-[#D8B448] group-hover:w-10 transition-all duration-350" />
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
 
       </div>
@@ -208,9 +207,31 @@ export const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({
         </div>
 
         {/* Dynamic Project Tabs Switcher (Top layout, tidy and elegant) */}
-        <div className="flex flex-wrap gap-2.5 justify-center bg-slate-100/70 p-2 rounded-2xl max-w-2xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 max-w-4xl mx-auto p-2.5 bg-slate-100/60 rounded-[24px] border border-slate-200/50 shadow-inner relative z-20">
           {HOME_FEATURED_PROJECTS.map((proj, idx) => {
             const isTabActive = activeFeaturedProject === idx;
+            
+            // Choose the perfect icon and color theme for each project
+            let IconComponent = Building;
+            let themeColor = 'text-[#2B4D89]';
+            let bgGlow = 'bg-blue-500/10';
+            let badgeTextAr = 'تغطية ليد 💡';
+            let badgeTextEn = 'LED Façade';
+
+            if (idx === 1) {
+              IconComponent = Home;
+              themeColor = 'text-emerald-500';
+              bgGlow = 'bg-emerald-500/10';
+              badgeTextAr = 'واجهة زجاج 💎';
+              badgeTextEn = 'Glass Facade';
+            } else if (idx === 2) {
+              IconComponent = Briefcase;
+              themeColor = 'text-amber-500';
+              bgGlow = 'bg-amber-500/10';
+              badgeTextAr = 'مقر ذكي ⚡';
+              badgeTextEn = 'Smart Office';
+            }
+
             return (
               <button 
                 key={proj.id}
@@ -218,13 +239,43 @@ export const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({
                   setActiveFeaturedProject(idx);
                   setActivePhotoIndex(0);
                 }}
-                className={`px-5 py-3 rounded-xl text-xs font-black transition-all duration-300 cursor-pointer ${
+                className={`relative group flex flex-row items-center justify-between gap-3 px-5 py-3.5 sm:py-4 rounded-xl text-xs sm:text-sm font-black transition-all duration-300 cursor-pointer border ${
                   isTabActive 
-                    ? 'bg-white text-[#2B4D89] shadow-sm font-extrabold scale-[1.02]' 
-                    : 'text-gray-500 hover:text-slate-800 hover:bg-white/30'
+                    ? 'bg-[#2B4D89] text-white border-[#2B4D89] shadow-lg scale-[1.02] sm:scale-[1.04]' 
+                    : 'bg-white text-slate-700 border-slate-200/80 hover:text-[#2B4D89] hover:bg-slate-50 hover:border-slate-300 hover:shadow-xs'
                 }`}
+                style={{ direction: isEn ? 'ltr' : 'rtl' }}
               >
-                {isEn ? proj.nameEn.split('-')[0] : proj.nameAr.split('-')[0]}
+                <div className="flex items-center gap-3 w-full justify-start">
+                  <div className={`p-2 rounded-lg shrink-0 transition-all ${
+                    isTabActive 
+                      ? 'bg-white/10 text-white scale-110' 
+                      : `bg-slate-50 ${themeColor}`
+                  }`}>
+                    <IconComponent className="w-5 h-5" />
+                  </div>
+                  
+                  <div className={`flex flex-col text-right ${isEn ? 'text-left' : 'text-right'}`}>
+                    <span className={`font-black tracking-tight text-xs sm:text-[13px] ${isTabActive ? 'text-white' : 'text-slate-800'}`}>
+                      {isEn ? proj.nameEn.split('-')[0] : proj.nameAr.split('-')[0]}
+                    </span>
+                    <span className={`text-[10px] font-bold mt-0.5 ${isTabActive ? 'text-blue-200' : 'text-gray-400'}`}>
+                      {isEn ? badgeTextEn : badgeTextAr}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Animated indicator on the active button */}
+                {isTabActive ? (
+                  <span className={`absolute top-2.5 ${isEn ? 'right-2.5' : 'left-2.5'} flex h-2 w-2`}>
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400"></span>
+                  </span>
+                ) : (
+                  <div className={`hidden sm:block opacity-0 group-hover:opacity-100 transition-opacity ${isEn ? 'rotate-180' : ''}`}>
+                    <span className="text-xs text-slate-400">←</span>
+                  </div>
+                )}
               </button>
             );
           })}
@@ -518,7 +569,7 @@ export const Comparison: React.FC<ComparisonProps> = ({
           </div>
 
           {/* Comparative features rows details */}
-          <div dir={isEn ? "ltr" : "rtl"} className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
+          <div dir={isEn ? "ltr" : "rtl"} className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 lg:gap-5 relative z-10">
             {compareActiveTab === 'trad' ? (
               // Traditional issues mapping
               (isEn ? HOME_COMPARISON.en.traditional.items : HOME_COMPARISON.ar.traditional.items || []).map((item: any, idx: number) => (
@@ -527,17 +578,17 @@ export const Comparison: React.FC<ComparisonProps> = ({
                   initial={{ opacity: 0, x: isEn ? -15 : 15 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: idx * 0.05 }}
-                  className="p-5 bg-red-950/20 border border-red-500/20 hover:border-red-500/40 rounded-2xl transition-all duration-300 shadow-sm"
+                  className="p-3 sm:p-3.5 bg-red-950/10 border border-red-500/10 hover:border-red-500/25 rounded-xl transition-all duration-300 shadow-3xs"
                 >
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-red-500/10 text-red-400 flex items-center justify-center shrink-0 border border-red-500/15">
-                      <X className="w-4 h-4" />
+                  <div className="flex items-start gap-2 sm:gap-2.5">
+                    <div className="w-6 h-6 rounded bg-red-500/10 text-red-400 flex items-center justify-center shrink-0 border border-red-500/15 mt-0.5">
+                      <X className="w-3 h-3" />
                     </div>
-                    <div className="space-y-1.5 flex-1">
-                      <h4 className={`font-extrabold text-sm text-[#FF8585] ${isEn ? 'text-left' : 'text-right'}`}>
+                    <div className="space-y-0.5 flex-1">
+                      <h4 className={`font-black text-xs sm:text-[13px] text-[#FF8585] ${isEn ? 'text-left' : 'text-right'}`}>
                         {item.title}
                       </h4>
-                      <p className={`text-gray-300 text-xs sm:text-[13px] leading-relaxed font-semibold ${isEn ? 'text-left' : 'text-right'}`}>
+                      <p className={`text-gray-300 text-[10px] sm:text-[11px] md:text-xs leading-relaxed font-semibold ${isEn ? 'text-left' : 'text-right'}`}>
                         {item.text}
                       </p>
                     </div>
@@ -552,17 +603,17 @@ export const Comparison: React.FC<ComparisonProps> = ({
                   initial={{ opacity: 0, x: isEn ? 15 : -15 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: idx * 0.05 }}
-                  className="p-5 bg-emerald-950/15 border border-emerald-500/20 hover:border-emerald-500/40 rounded-2xl transition-all duration-300 shadow-sm"
+                  className="p-3 sm:p-3.5 bg-emerald-950/10 border border-emerald-500/10 hover:border-emerald-500/25 rounded-xl transition-all duration-300 shadow-3xs"
                 >
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-300 flex items-center justify-center shrink-0 border border-emerald-500/15">
-                      <Check className="w-4 h-4" />
+                  <div className="flex items-start gap-2 sm:gap-2.5">
+                    <div className="w-6 h-6 rounded bg-emerald-500/10 text-emerald-300 flex items-center justify-center shrink-0 border border-emerald-500/15 mt-0.5">
+                      <Check className="w-3 h-3" />
                     </div>
-                    <div className="space-y-1.5 flex-1">
-                      <h4 className={`font-extrabold text-sm text-emerald-400 ${isEn ? 'text-left' : 'text-right'}`}>
+                    <div className="space-y-0.5 flex-1">
+                      <h4 className={`font-black text-xs sm:text-[13px] text-emerald-400 ${isEn ? 'text-left' : 'text-right'}`}>
                         {item.title}
                       </h4>
-                      <p className={`text-gray-300 text-xs sm:text-[13px] leading-relaxed font-semibold ${isEn ? 'text-left' : 'text-right'}`}>
+                      <p className={`text-gray-300 text-[10px] sm:text-[11px] md:text-xs leading-relaxed font-semibold ${isEn ? 'text-left' : 'text-right'}`}>
                         {item.text}
                       </p>
                     </div>

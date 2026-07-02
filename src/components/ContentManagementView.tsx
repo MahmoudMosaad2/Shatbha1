@@ -401,7 +401,32 @@ export const ContentManagementView: React.FC<ContentManagementViewProps> = ({ la
   const [featuredProjects, setFeaturedProjects] = useState<FeaturedProject[]>(() => {
     const saved = localStorage.getItem('shatibha_homepage_featured_projects');
     if (saved) {
-      try { return JSON.parse(saved); } catch (e) {}
+      try {
+        const parsed = JSON.parse(saved);
+        let updated = false;
+        const migrated = parsed.map((p: any) => {
+          if (p.id === 'proj-3') {
+            const hasBroken = p.images.some((img: string) => img.includes('photo-1617806118233-18e1db207f62') || img.includes('photo-1600607687939-ce8a6c25118c'));
+            if (hasBroken) {
+              updated = true;
+              return {
+                ...p,
+                images: [
+                  'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&auto=format&fit=crop&q=80',
+                  'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=800&auto=format&fit=crop&q=80',
+                  'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=800&auto=format&fit=crop&q=80'
+                ]
+              };
+            }
+          }
+          return p;
+        });
+        if (updated) {
+          localStorage.setItem('shatibha_homepage_featured_projects', JSON.stringify(migrated));
+          return migrated;
+        }
+        return parsed;
+      } catch (e) {}
     }
     return HOME_FEATURED_PROJECTS;
   });

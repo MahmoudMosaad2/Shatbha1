@@ -150,7 +150,33 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
   const [featuredProjects, setFeaturedProjects] = useState(() => {
     try {
       const stored = localStorage.getItem('shatibha_homepage_featured_projects');
-      return stored ? JSON.parse(stored) : RAW_HOME_FEATURED_PROJECTS;
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        let updated = false;
+        const migrated = parsed.map((p: any) => {
+          if (p.id === 'proj-3') {
+            const hasBroken = p.images.some((img: string) => img.includes('photo-1617806118233-18e1db207f62') || img.includes('photo-1600607687939-ce8a6c25118c'));
+            if (hasBroken) {
+              updated = true;
+              return {
+                ...p,
+                images: [
+                  'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&auto=format&fit=crop&q=80',
+                  'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=800&auto=format&fit=crop&q=80',
+                  'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=800&auto=format&fit=crop&q=80'
+                ]
+              };
+            }
+          }
+          return p;
+        });
+        if (updated) {
+          localStorage.setItem('shatibha_homepage_featured_projects', JSON.stringify(migrated));
+          return migrated;
+        }
+        return parsed;
+      }
+      return RAW_HOME_FEATURED_PROJECTS;
     } catch {
       return RAW_HOME_FEATURED_PROJECTS;
     }
@@ -288,7 +314,12 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
 
   // Interactive UI states for custom sections
   const [faqOpenIndex, setFaqOpenIndex] = useState<number | null>(null);
-  const [compareActiveTab, setCompareActiveTab] = useState<'trad' | 'shatibha'>('shatibha');
+  const [compareActiveTab, setCompareActiveTab] = useState<'trad' | 'shatibha'>('trad');
+
+  React.useEffect(() => {
+    setCompareActiveTab('trad');
+  }, []);
+
   const [activeFeaturedProject, setActiveFeaturedProject] = useState(0);
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
   const [faqSearch, setFaqSearch] = useState('');
@@ -830,11 +861,11 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
       <div className={`${showMobileLanding ? 'block' : 'hidden md:block'} bg-[#F4F6F9] pb-12 min-h-screen`}>
         
         {/* NAVBAR */}
-        <nav className="bg-white shadow-sm sticky top-0 left-0 right-0 z-50 px-4 sm:px-8 border-b border-gray-150">
+        <nav className="bg-white shadow-sm sticky top-0 left-0 right-0 z-50 px-3 sm:px-8 border-b border-gray-150">
         <div className="max-w-7xl mx-auto flex items-center justify-between h-[56px] sm:h-[72px]">
           
           <div 
-            className="flex items-center gap-1.5 sm:gap-3 cursor-pointer" 
+            className="flex items-center gap-1 sm:gap-3 cursor-pointer shrink-0" 
             onClick={() => {
               if (showMobileLanding) {
                 setShowMobileLanding(false);
@@ -843,12 +874,12 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
               }
             }}
           >
-            <ShattabhaLogo className="w-8 h-8 sm:w-11 sm:h-11" />
-            <div className={`flex flex-col select-none ${isEn ? 'items-start' : 'items-end'}`}>
-              <span className="font-extrabold text-xs sm:text-lg text-[#2B4D89] leading-tight tracking-tight">
+            <ShattabhaLogo className="w-7 h-7 sm:w-11 sm:h-11 shrink-0" />
+            <div className={`flex flex-col select-none ${isEn ? 'items-start' : 'items-end'} shrink-0`}>
+              <span className="font-extrabold text-[10px] sm:text-lg text-[#2B4D89] leading-tight tracking-tight">
                 {getTranslation('platformName', lang)}
               </span>
-              <span className="text-[7px] sm:text-[9px] text-[#2B4D89] tracking-wider uppercase font-bold leading-none">SHATTABHA</span>
+              <span className="text-[6px] sm:text-[9px] text-[#2B4D89] tracking-wider uppercase font-bold leading-none">SHATTABHA</span>
             </div>
           </div>
 
@@ -859,27 +890,31 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
             <li><a href="#faq" className="hover:text-[#2B4D89] transition-colors">{isEn ? 'FAQ' : 'الأسئلة الشائعة'}</a></li>
           </ul>
 
-          <div className="flex items-center gap-1.5 sm:gap-3">
+          <div className="flex items-center gap-1 sm:gap-3 shrink-0">
             {setLang && (
               <button 
                 onClick={() => setLang(isEn ? 'ar' : 'en')}
-                className="p-1 px-2.5 border border-gray-200 text-gray-500 rounded-lg text-[10px] md:text-xs font-bold hover:bg-gray-50 hover:text-[#2B4D89] transition-colors cursor-pointer"
+                className="p-1 px-1.5 sm:px-2.5 border border-gray-200 text-gray-500 rounded-lg text-[9px] sm:text-xs font-bold hover:bg-gray-50 hover:text-[#2B4D89] transition-colors cursor-pointer shrink-0"
               >
-                {isEn ? 'العربية' : 'English'}
+                <span className="hidden sm:inline">{isEn ? 'العربية' : 'English'}</span>
+                <span className="sm:hidden">{isEn ? 'العربية' : 'EN'}</span>
               </button>
             )}
             <button 
               onClick={() => setModalType('LOGIN')}
-              className="px-3.5 py-1.5 border border-[#2B4D89]/35 text-[#2B4D89] text-xs font-extrabold rounded-xl hover:bg-slate-50 transition-all cursor-pointer whitespace-nowrap"
+              className="px-2 sm:px-3.5 py-1 sm:py-1.5 border border-[#2B4D89]/35 text-[#2B4D89] text-[9px] sm:text-xs font-extrabold rounded-xl hover:bg-slate-50 transition-all cursor-pointer whitespace-nowrap shrink-0"
             >
               {isEn ? 'Login' : 'تسجيل دخول'}
             </button>
             <button 
               onClick={() => setModalType('CLIENT')}
-              className="bg-[#2B4D89] text-white px-3 sm:px-5 py-2 text-[10px] sm:text-xs font-extrabold rounded-xl hover:bg-[#1E3A68] transition-all shadow-md shadow-[#2B4D89]/20 hover:-translate-y-0.5 cursor-pointer flex items-center gap-1.5 shrink-0 whitespace-nowrap"
+              className="bg-[#2B4D89] text-white px-2 sm:px-5 py-1.5 sm:py-2 text-[9px] sm:text-xs font-extrabold rounded-xl hover:bg-[#1E3A68] transition-all shadow-md shadow-[#2B4D89]/20 hover:-translate-y-0.5 cursor-pointer flex items-center gap-1 sm:gap-1.5 shrink-0 whitespace-nowrap"
             >
-              {isEn ? 'Request Finishing' : 'اطلب تشطيب الآن'} 
-              <ArrowRight className={`w-3.5 h-3.5 ${isEn ? '' : 'scale-x-[-1]'}`} />
+              <span>
+                <span className="hidden sm:inline">{isEn ? 'Request Finishing' : 'اطلب تشطيب الآن'}</span>
+                <span className="sm:hidden">{isEn ? 'Request' : 'اطلب تشطيب'}</span>
+              </span> 
+              <ArrowRight className={`w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 ${isEn ? '' : 'scale-x-[-1]'}`} />
             </button>
           </div>
 
