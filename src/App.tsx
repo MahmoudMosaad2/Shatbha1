@@ -193,46 +193,46 @@ export default function App() {
   // Core Reactive States with robust existence check
   const [requests, setRequests] = useState<ClientRequest[]>(() => {
     const loaded = loadStoredData('shatibha_requests_v4', initialRequests) as ClientRequest[];
-    return loaded.filter(r => r.id && r.id.length >= 10);
+    return loaded.filter(r => r.id && r.id.length > 0);
   });
   const [companies, setCompanies] = useState<Company[]>(() => {
     const loaded = loadStoredData('shatibha_companies_v4', initialCompanies);
-    return loaded.filter(c => c.id && c.id.length >= 10);
+    return loaded.filter(c => c.id && c.id.length > 0);
   });
   const [offers, setOffers] = useState<Offer[]>(() => {
     const loaded = loadStoredData('shatibha_offers_v4', initialOffers);
-    return loaded.filter(o => o.id && o.id.length >= 10);
+    return loaded.filter(o => o.id && o.id.length > 0);
   });
   const [contracts, setContracts] = useState<Contract[]>(() => {
     const loaded = loadStoredData('shatibha_contracts_v4', initialContracts);
-    return loaded.filter(c => c.id && c.id.length >= 10);
+    return loaded.filter(c => c.id && c.id.length > 0);
   });
   const [inspectors, setInspectors] = useState<Inspector[]>(() => {
     const loaded = loadStoredData('shatibha_inspectors_v4', initialInspectors);
-    return loaded.filter(i => i.id && i.id.length >= 10);
+    return loaded.filter(i => i.id && i.id.length > 0);
   });
   const [stages, setStages] = useState<ProjectStage[]>(() => {
     const loaded = loadStoredData('shatibha_stages_v4', initialProjectStages);
-    return loaded.filter(s => s.id && s.id.length >= 10);
+    return loaded.filter(s => s.id && s.id.length > 0);
   });
   const [notifications, setNotifications] = useState<Notification[]>(() => {
     const loaded = loadStoredData('shatibha_notifications_v4', initialNotifications);
-    return loaded.filter(n => n.id && n.id.length >= 10);
+    return loaded.filter(n => n.id && n.id.length > 0);
   });
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>(() => loadStoredData('shatibha_promo_codes_v4', initialPromoCodes));
 
   // Expanded workflows & persistence states
   const [warranties, setWarranties] = useState<WarrantyRecord[]>(() => {
     const loaded = loadStoredData('shatibha_warranties_v4', initialWarrantyRecords);
-    return loaded.filter(w => w.id && w.id.length >= 10);
+    return loaded.filter(w => w.id && w.id.length > 0);
   });
   const [complaints, setComplaints] = useState<WarrantyComplaint[]>(() => {
     const loaded = loadStoredData('shatibha_complaints_v4', initialWarrantyComplaints);
-    return loaded.filter(c => c.id && c.id.length >= 10);
+    return loaded.filter(c => c.id && c.id.length > 0);
   });
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>(() => {
     const loaded = loadStoredData('shatibha_audit_logs_v4', initialAuditLogs);
-    return loaded.filter(l => l.id && l.id.length >= 10);
+    return loaded.filter(l => l.id && l.id.length > 0);
   });
 
   // --- EMAIL NOTIFICATION SIMULATION STATES ---

@@ -43,9 +43,9 @@ export const AdminLoginView: React.FC<AdminLoginViewProps> = ({ onLogin, lang, o
 
       <button
         onClick={onBack}
-        className={`absolute top-4 ${isEn ? 'left-4 right-auto' : 'right-4 left-auto'} sm:top-6 sm:left-6 sm:right-6 flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 text-slate-600 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-all font-extrabold text-xs cursor-pointer shadow-xs z-20`}
+        className={`absolute top-4 ${isEn ? 'left-4 right-auto sm:left-6 sm:right-auto' : 'right-4 left-auto sm:right-6 sm:left-auto'} sm:top-6 flex items-center gap-1.5 px-4.5 py-2.5 bg-white border border-slate-200 text-slate-700 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-all font-black text-xs cursor-pointer shadow-md hover:shadow-lg z-20`}
       >
-        <Home className="w-3.5 h-3.5 text-[#2B4D89]" />
+        <Home className="w-4 h-4 text-[#2B4D89]" />
         <span>{isEn ? 'Back to Home' : 'الرجوع للصفحة الرئيسية'}</span>
       </button>
 
