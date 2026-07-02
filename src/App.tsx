@@ -209,7 +209,24 @@ export default function App() {
   });
   const [inspectors, setInspectors] = useState<Inspector[]>(() => {
     const loaded = loadStoredData('shatibha_inspectors_v4', initialInspectors);
-    return loaded.filter(i => i.id && i.id.length > 0);
+    const filtered = loaded.filter(i => i.id && i.id.length > 0);
+    if (!filtered.some(i => i.id === 'INS-KHALED')) {
+      filtered.unshift({
+        id: 'INS-KHALED',
+        name: 'المهندس خالد عبد الرحمن',
+        governorate: 'القاهرة',
+        zone: 'التجمع الخامس',
+        activeProjectsCount: 1,
+        phone: '01002233445',
+        status: 'ACTIVE',
+        password: '12345678',
+        stagesSpecialties: ['السباكة', 'الكهرباء', 'المحارة', 'الدهانات', 'الأرضيات'],
+        responseSpeedRating: 4.9,
+        reportAccuracyRating: 4.8,
+        totalEvaluationsCount: 14
+      });
+    }
+    return filtered;
   });
   const [stages, setStages] = useState<ProjectStage[]>(() => {
     const loaded = loadStoredData('shatibha_stages_v4', initialProjectStages);
@@ -2264,6 +2281,7 @@ setStages(prev => {
             companiesCount={companies.filter(c => c.status === 'APPROVED').length}
             lang={lang}
             setLang={setLang}
+            companies={companies}
           />
         )}
 

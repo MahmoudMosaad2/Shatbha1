@@ -180,7 +180,18 @@ export const CompanyDashboardView: React.FC<CompanyDashboardViewProps> = ({
 }) => {
   const isEn = lang === 'en';
   // Dynamic active company ID for testing multi-company bidding
-  const [activeCompanyId, setActiveCompanyId] = useState<string>('COMP-1');
+  const [activeCompanyId, setActiveCompanyId] = useState<string>(() => {
+    const loggedCompanyId = localStorage.getItem('shattabba_logged_company_id');
+    if (loggedCompanyId && companies.some(c => c.id === loggedCompanyId)) {
+      return loggedCompanyId;
+    }
+    const loggedEmail = localStorage.getItem('shattabba_client_email') || '';
+    const foundByEmail = companies.find(c => c.email?.toLowerCase() === loggedEmail.toLowerCase());
+    if (foundByEmail) {
+      return foundByEmail.id;
+    }
+    return 'COMP-1';
+  });
   const activeCompany = companies.find(c => c.id === activeCompanyId) || companies[0];
 
   const [ignoredRequestIds, setIgnoredRequestIds] = useState<string[]>([]);

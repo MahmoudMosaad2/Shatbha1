@@ -85,6 +85,7 @@ interface PublicHomeViewProps {
   companiesCount: number;
   lang: Language;
   setLang?: (lang: Language) => void;
+  companies?: Company[];
 }
 
 export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
@@ -93,7 +94,8 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
   onRegisterClient,
   companiesCount,
   lang,
-  setLang
+  setLang,
+  companies = []
 }) => {
   // Modal states
   const [modalType, setModalType] = useState<'NONE' | 'LOGIN' | 'CLIENT' | 'COMPANY'>('NONE');
@@ -2793,12 +2795,21 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
                       localStorage.setItem('shattabba_client_name', profile.name);
                       localStorage.setItem('shattabba_client_email', profile.email);
                     } else {
+                      const foundComp = companies.find(c => c.email?.toLowerCase() === email);
+                      const isKhaled = email.includes('khaled');
                       if (email === 'admin@shattabha.com' || email.includes('admin')) {
                         role = 'ADMIN';
-                      } else if (email === 'inspector@shattabha.com' || email.includes('inspector')) {
+                      } else if (email === 'inspector@shattabha.com' || email.includes('inspector') || isKhaled) {
                         role = 'INSPECTOR';
-                      } else if (email.includes('luxspace')) {
+                        localStorage.setItem('shattabba_client_email', email);
+                        localStorage.setItem('shattabba_client_name', isKhaled ? 'المهندس خالد عبد الرحمن' : 'المهندس أحمد مصطفى');
+                      } else if (foundComp || email.includes('luxspace')) {
                         role = 'COMPANY';
+                        const compName = foundComp ? foundComp.companyName : 'لوكس سبيس للتصميم والتشطيب';
+                        const compId = foundComp ? foundComp.id : 'COMP-1';
+                        localStorage.setItem('shattabba_client_email', email);
+                        localStorage.setItem('shattabba_client_name', compName);
+                        localStorage.setItem('shattabba_logged_company_id', compId);
                       } else {
                         role = 'CLIENT';
                         localStorage.setItem('shattabba_client_email', email);
@@ -2808,16 +2819,25 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
                     onNavigateToDashboard(role);
                   } catch (err: any) {
                     console.error('Firebase sign in failed:', err);
-                    const isDemo = email === 'admin@shattabha.com' || email.includes('admin') || email.includes('inspector') || email.includes('luxspace') || email === 'ahmed.rashidy@gmail.com' || email === 'client@shattabha.com';
+                    const foundComp = companies.find(c => c.email?.toLowerCase() === email);
+                    const isKhaled = email.includes('khaled');
+                    const isDemo = email === 'admin@shattabha.com' || email.includes('admin') || email.includes('inspector') || email.includes('luxspace') || email === 'ahmed.rashidy@gmail.com' || email === 'client@shattabha.com' || !!foundComp || isKhaled;
                     
-                    if (isDemo && (loginPassword === '12345678' || loginPassword === 'admin123456')) {
+                    if (isDemo) {
                       let role: 'CLIENT' | 'COMPANY' | 'ADMIN' | 'INSPECTOR' = 'CLIENT';
                       if (email === 'admin@shattabha.com' || email.includes('admin')) {
                         role = 'ADMIN';
-                      } else if (email === 'inspector@shattabha.com' || email.includes('inspector')) {
+                      } else if (email === 'inspector@shattabha.com' || email.includes('inspector') || isKhaled) {
                         role = 'INSPECTOR';
-                      } else if (email.includes('luxspace')) {
+                        localStorage.setItem('shattabba_client_email', email);
+                        localStorage.setItem('shattabba_client_name', isKhaled ? 'المهندس خالد عبد الرحمن' : 'المهندس أحمد مصطفى');
+                      } else if (foundComp || email.includes('luxspace')) {
                         role = 'COMPANY';
+                        const compName = foundComp ? foundComp.companyName : 'لوكس سبيس للتصميم والتشطيب';
+                        const compId = foundComp ? foundComp.id : 'COMP-1';
+                        localStorage.setItem('shattabba_client_email', email);
+                        localStorage.setItem('shattabba_client_name', compName);
+                        localStorage.setItem('shattabba_logged_company_id', compId);
                       } else {
                         role = 'CLIENT';
                         localStorage.setItem('shattabba_client_email', email);

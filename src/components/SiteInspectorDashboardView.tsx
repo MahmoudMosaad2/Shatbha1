@@ -30,7 +30,15 @@ export const SiteInspectorDashboardView: React.FC<SiteInspectorDashboardViewProp
 }) => {
   const isEn = lang === 'en';
   // Toggle between inspectors using a local simulator state
-  const [activeInspectorId, setActiveInspectorId] = useState<string>('INSP-1');
+  const [activeInspectorId, setActiveInspectorId] = useState<string>(() => {
+    const loggedEmail = localStorage.getItem('shattabba_client_email') || '';
+    if (loggedEmail.toLowerCase().includes('khaled')) {
+      return 'INS-KHALED';
+    }
+    const found = inspectors.find(i => i.email?.toLowerCase() === loggedEmail.toLowerCase());
+    if (found) return found.id;
+    return inspectors[0]?.id || 'INS-KHALED';
+  });
   const activeInspector = inspectors.find(i => i.id === activeInspectorId) || inspectors[0];
 
   // Inspector local coordination form states
