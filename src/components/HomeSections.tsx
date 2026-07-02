@@ -542,8 +542,8 @@ export const Comparison: React.FC<ComparisonProps> = ({
           <div className="absolute top-0 right-0 w-80 h-80 bg-white/[0.02] rounded-full blur-3xl pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#D8B448]/[0.02] rounded-full blur-3xl pointer-events-none" />
 
-          {/* Interactive Toggle tabs */}
-          <div className="text-center mb-8 relative z-10">
+          {/* Interactive Toggle tabs - visible only on mobile */}
+          <div className="text-center mb-8 relative z-10 md:hidden">
             <div className="inline-flex bg-slate-950/45 p-2 rounded-2xl border border-white/10 gap-2">
               <button 
                 onClick={() => setCompareActiveTab('shatibha')}
@@ -568,8 +568,75 @@ export const Comparison: React.FC<ComparisonProps> = ({
             </div>
           </div>
 
-          {/* Comparative features rows details */}
-          <div dir={isEn ? "ltr" : "rtl"} className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 lg:gap-5 relative z-10">
+          {/* Desktop Layout (Both columns side-by-side) - Hidden on mobile, shown on desktop */}
+          <div dir={isEn ? "ltr" : "rtl"} className="hidden md:grid grid-cols-2 gap-8 relative z-10">
+            {/* Traditional Column */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 pb-2 border-b border-white/10 mb-4 justify-start">
+                <span className="p-1.5 bg-red-500/10 text-red-400 rounded-lg border border-red-500/20 text-xs">⚠️</span>
+                <h3 className="font-black text-lg text-[#FF8585]">
+                  {isEn ? HOME_COMPARISON.en.traditional.title : HOME_COMPARISON.ar.traditional.title}
+                </h3>
+              </div>
+              <div className="space-y-3">
+                {(isEn ? HOME_COMPARISON.en.traditional.items : HOME_COMPARISON.ar.traditional.items || []).map((item: any, idx: number) => (
+                  <div 
+                    key={idx}
+                    className="p-3 sm:p-3.5 bg-red-950/10 border border-red-500/10 hover:border-red-500/25 rounded-xl transition-all duration-300 shadow-3xs"
+                  >
+                    <div className="flex items-start gap-2.5">
+                      <div className="w-6 h-6 rounded bg-red-500/10 text-red-400 flex items-center justify-center shrink-0 border border-red-500/15 mt-0.5">
+                        <X className="w-3 h-3" />
+                      </div>
+                      <div className="space-y-0.5 flex-1">
+                        <h4 className={`font-black text-[13px] text-[#FF8585] ${isEn ? 'text-left' : 'text-right'}`}>
+                          {item.title}
+                        </h4>
+                        <p className={`text-gray-300 text-[11px] leading-relaxed font-semibold ${isEn ? 'text-left' : 'text-right'}`}>
+                          {item.text}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Shattabha Column */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 pb-2 border-b border-white/10 mb-4 justify-start">
+                <span className="p-1.5 bg-emerald-500/10 text-emerald-300 rounded-lg border border-emerald-500/20 text-xs">🛡️</span>
+                <h3 className="font-black text-lg text-emerald-400">
+                  {isEn ? HOME_COMPARISON.en.shattabha.title : HOME_COMPARISON.ar.shattabha.title}
+                </h3>
+              </div>
+              <div className="space-y-3">
+                {(isEn ? HOME_COMPARISON.en.shattabha.items : HOME_COMPARISON.ar.shattabha.items || []).map((item: any, idx: number) => (
+                  <div 
+                    key={idx}
+                    className="p-3 sm:p-3.5 bg-emerald-950/10 border border-emerald-500/10 hover:border-emerald-500/25 rounded-xl transition-all duration-300 shadow-3xs"
+                  >
+                    <div className="flex items-start gap-2.5">
+                      <div className="w-6 h-6 rounded bg-emerald-500/10 text-emerald-300 flex items-center justify-center shrink-0 border border-emerald-500/15 mt-0.5">
+                        <Check className="w-3 h-3" />
+                      </div>
+                      <div className="space-y-0.5 flex-1">
+                        <h4 className={`font-black text-[13px] text-emerald-400 ${isEn ? 'text-left' : 'text-right'}`}>
+                          {item.title}
+                        </h4>
+                        <p className={`text-gray-300 text-[11px] leading-relaxed font-semibold ${isEn ? 'text-left' : 'text-right'}`}>
+                          {item.text}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile Layout (Toggle Tabs) - Shown on mobile only, hidden on desktop */}
+          <div dir={isEn ? "ltr" : "rtl"} className="grid grid-cols-1 md:hidden gap-3 relative z-10">
             {compareActiveTab === 'trad' ? (
               // Traditional issues mapping
               (isEn ? HOME_COMPARISON.en.traditional.items : HOME_COMPARISON.ar.traditional.items || []).map((item: any, idx: number) => (
@@ -578,17 +645,17 @@ export const Comparison: React.FC<ComparisonProps> = ({
                   initial={{ opacity: 0, x: isEn ? -15 : 15 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: idx * 0.05 }}
-                  className="p-3 sm:p-3.5 bg-red-950/10 border border-red-500/10 hover:border-red-500/25 rounded-xl transition-all duration-300 shadow-3xs"
+                  className="p-3 bg-red-950/10 border border-red-500/10 rounded-xl"
                 >
-                  <div className="flex items-start gap-2 sm:gap-2.5">
+                  <div className="flex items-start gap-2">
                     <div className="w-6 h-6 rounded bg-red-500/10 text-red-400 flex items-center justify-center shrink-0 border border-red-500/15 mt-0.5">
                       <X className="w-3 h-3" />
                     </div>
                     <div className="space-y-0.5 flex-1">
-                      <h4 className={`font-black text-xs sm:text-[13px] text-[#FF8585] ${isEn ? 'text-left' : 'text-right'}`}>
+                      <h4 className={`font-black text-xs text-[#FF8585] ${isEn ? 'text-left' : 'text-right'}`}>
                         {item.title}
                       </h4>
-                      <p className={`text-gray-300 text-[10px] sm:text-[11px] md:text-xs leading-relaxed font-semibold ${isEn ? 'text-left' : 'text-right'}`}>
+                      <p className={`text-gray-300 text-[10px] leading-relaxed font-semibold ${isEn ? 'text-left' : 'text-right'}`}>
                         {item.text}
                       </p>
                     </div>
@@ -603,17 +670,17 @@ export const Comparison: React.FC<ComparisonProps> = ({
                   initial={{ opacity: 0, x: isEn ? 15 : -15 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: idx * 0.05 }}
-                  className="p-3 sm:p-3.5 bg-emerald-950/10 border border-emerald-500/10 hover:border-emerald-500/25 rounded-xl transition-all duration-300 shadow-3xs"
+                  className="p-3 bg-emerald-950/10 border border-emerald-500/10 rounded-xl"
                 >
-                  <div className="flex items-start gap-2 sm:gap-2.5">
+                  <div className="flex items-start gap-2">
                     <div className="w-6 h-6 rounded bg-emerald-500/10 text-emerald-300 flex items-center justify-center shrink-0 border border-emerald-500/15 mt-0.5">
                       <Check className="w-3 h-3" />
                     </div>
                     <div className="space-y-0.5 flex-1">
-                      <h4 className={`font-black text-xs sm:text-[13px] text-emerald-400 ${isEn ? 'text-left' : 'text-right'}`}>
+                      <h4 className={`font-black text-xs text-emerald-400 ${isEn ? 'text-left' : 'text-right'}`}>
                         {item.title}
                       </h4>
-                      <p className={`text-gray-300 text-[10px] sm:text-[11px] md:text-xs leading-relaxed font-semibold ${isEn ? 'text-left' : 'text-right'}`}>
+                      <p className={`text-gray-300 text-[10px] leading-relaxed font-semibold ${isEn ? 'text-left' : 'text-right'}`}>
                         {item.text}
                       </p>
                     </div>

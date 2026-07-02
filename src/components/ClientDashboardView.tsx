@@ -412,9 +412,9 @@ export const ClientDashboardView: React.FC<ClientDashboardViewProps> = ({
     const newRequest: ClientRequest = {
       id: newReqId,
       clientId: 'ID#4092',
-      clientName: 'أحمد محمود الرشيدي',
-      clientPhone: '+20 100 123 4567',
-      clientEmail: 'ahmed.rashidy@gmail.com',
+      clientName: localStorage.getItem('shattabba_client_name') || clientName || 'أحمد محمود الرشيدي',
+      clientPhone: localStorage.getItem('shattabba_client_phone') || '+20 100 123 4567',
+      clientEmail: localStorage.getItem('shattabba_client_email') || clientEmail || 'ahmed.rashidy@gmail.com',
       unitType,
       area: Number(area),
       governorate,
