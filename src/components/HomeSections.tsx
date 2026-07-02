@@ -90,7 +90,7 @@ export const HowShattabhaWorks: React.FC<HowShattabhaWorksProps> = ({ isEn, howI
             dir={isEn ? 'ltr' : 'rtl'}
           >
             {/* Dash line in background for desktop only */}
-            <div className="absolute top-[35px] left-[10%] right-[10%] h-[2px] border-t-2 border-dashed border-[#2B4D89]/15 hidden md:block z-0 pointer-events-none" />
+            <div className="absolute top-[55px] left-[10%] right-[10%] h-[2px] border-t-2 border-dashed border-[#2B4D89]/15 hidden md:block z-0 pointer-events-none" />
 
             {howItWorksSteps.map((step, idx) => {
               const StepIcon = step.icon;
@@ -117,40 +117,63 @@ export const HowShattabhaWorks: React.FC<HowShattabhaWorksProps> = ({ isEn, howI
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.35, delay: idx * 0.06 }}
-                  whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                  className="relative bg-white border border-slate-150 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col z-10 text-right group self-stretch w-[210px] min-[360px]:w-[225px] min-[400px]:w-[240px] md:w-auto shrink-0 snap-center"
+                  whileHover={{ y: -8, transition: { duration: 0.2 } }}
+                  className="relative bg-white border border-slate-250 rounded-[24px] shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col z-10 text-right group self-stretch w-[240px] min-[360px]:w-[255px] min-[400px]:w-[270px] md:w-auto shrink-0 snap-center"
                   dir={isEn ? 'ltr' : 'rtl'}
                 >
-                  {/* Header background with deep blue to teal gradients - Extra Compact */}
-                  <div className="bg-gradient-to-br from-[#1E3254] to-[#2B4D89] p-3 text-white space-y-1.5 relative overflow-hidden">
-                    <div className="absolute -right-6 -bottom-6 w-12 h-12 rounded-full bg-[#D8B448]/5 blur-md pointer-events-none group-hover:scale-125 transition-transform" />
+                  {/* Header background with deep blue to navy gradients - High Fidelity */}
+                  <div className="bg-gradient-to-br from-[#1E3254] to-[#2B4D89] p-5 text-white space-y-3 relative overflow-hidden shrink-0">
+                    <div className="absolute -right-6 -bottom-6 w-16 h-16 rounded-full bg-[#D8B448]/5 blur-lg pointer-events-none group-hover:scale-125 transition-transform" />
                     
-                    {/* Compact row: Number + Logo + First sentence label */}
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <div className="flex items-center text-sm font-black text-[#D8B448] font-mono shrink-0">
-                        <span>{step.id}</span>
-                        <span>.</span>
-                      </div>
-                      
-                      <div className="w-5 h-5 rounded bg-white/10 text-[#D8B448] flex items-center justify-center shrink-0">
-                        <StepIcon className="w-3 h-3 shrink-0" />
+                    <div className="flex items-center justify-between">
+                      {/* Icon */}
+                      <div className="w-10 h-10 rounded-xl bg-white/10 text-[#D8B448] flex items-center justify-center shadow-inner group-hover:bg-[#D8B448] group-hover:text-white transition-all duration-300">
+                        <StepIcon className="w-5 h-5 shrink-0 transition-transform duration-500 group-hover:rotate-12" />
                       </div>
 
-                      <span className="text-[9px] font-black tracking-wide bg-white/15 text-[#D8B448] border border-white/5 px-1.5 py-0.5 rounded whitespace-nowrap overflow-hidden text-ellipsis max-w-[140px] sm:max-w-none">
+                      {/* Number */}
+                      <span className="text-xl font-black text-white/50 group-hover:text-[#D8B448] transition-colors font-mono">
+                        {isEn ? `0${idx + 1}` : `٠${idx + 1}`}
+                      </span>
+                    </div>
+
+                    {/* Middle Pill Badge */}
+                    <div className="inline-block mt-1">
+                      <span className="text-[10px] font-black tracking-wide bg-white/10 text-[#D8B448] border border-white/5 px-2 py-0.5 rounded">
                         {isEn ? stepLabelsEn[idx] : stepLabelsAr[idx]}
                       </span>
                     </div>
 
-                    <h3 className="text-xs font-black text-white leading-snug group-hover:text-[#D8B448] transition-colors pt-0.5">
+                    {/* Bottom Title */}
+                    <h3 className="text-sm font-black text-white leading-snug group-hover:text-[#D8B448] transition-colors pt-1">
                       {isEn ? step.titleEn : step.titleAr}
                     </h3>
                   </div>
 
-                  {/* Body details - Compact, no footer */}
-                  <div className="p-3 flex-1 flex flex-col justify-start bg-slate-50/50">
-                    <p className="text-slate-600 text-[10px] sm:text-[11px] font-bold leading-relaxed">
+                  {/* Body details - Clean with horizontal divider and secure footer */}
+                  <div className="p-5 flex-1 flex flex-col justify-between bg-white text-right">
+                    <p className={`text-slate-500 text-[11px] font-bold leading-relaxed ${isEn ? 'text-left' : 'text-right'}`}>
                       {isEn ? step.descEn : step.descAr}
                     </p>
+
+                    <div className="mt-5">
+                      {/* Horizontal divider line */}
+                      <div className="border-t border-slate-100/80 mb-3.5" />
+                      
+                      {/* Footer info: Lock/Escrow status */}
+                      <div className="flex items-center justify-between w-full">
+                        {/* Left Side decorative pill */}
+                        <div className="w-8 h-2 bg-slate-100 rounded-full border border-slate-200/40" />
+                        
+                        {/* Right Side Secure Label */}
+                        <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-bold text-[#2B4D89] select-none shrink-0">
+                          <span className="text-[10px] text-amber-500">🔒</span>
+                          <span>
+                            {isEn ? "Escrow Secured" : "مؤمن بحساب الضمان"}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </motion.div>
               );
