@@ -105,7 +105,7 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
 
   
   // Interactive Slider
-  const [showAfter, setShowAfter] = useState<boolean>(true);
+  const [showAfter, setShowAfter] = useState<boolean>(false);
   const [slideIndex, setSlideIndex] = useState(0);
   const [mobileActiveSlide, setMobileActiveSlide] = useState(0);
   const [showMobileLanding, setShowMobileLanding] = useState(false);
@@ -939,39 +939,55 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
             </p>
 
             {/* Microactive CTA Buttons Row */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full pt-2">
+            <div className="grid grid-cols-2 gap-2.5 w-full pt-3">
               <motion.button 
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ scale: 1.015 }}
+                whileTap={{ scale: 0.985 }}
                 onClick={() => setModalType('CLIENT')}
-                className="bg-[#2B4D89] text-white text-xs sm:text-sm font-black px-8 py-4.5 rounded-xl shadow-lg shadow-[#2B4D89]/20 hover:bg-[#1E3A68] transition-all cursor-pointer flex items-center justify-center gap-2 flex-1"
+                className="bg-gradient-to-r from-[#2B4D89] to-[#1E3A68] text-white text-[11px] min-[360px]:text-[12px] sm:text-sm font-black py-4 px-2 rounded-xl shadow-md shadow-[#2B4D89]/15 hover:shadow-lg transition-all cursor-pointer flex items-center justify-center text-center select-none"
               >
-                🏠 {isEn ? 'Order Finishing Now' : 'اطلب تشطيب عقارك الآن'}
+                <span className="w-full text-center block truncate">{isEn ? 'Order Finishing' : 'اطلب تشطيب الآن'}</span>
               </motion.button>
               
               <motion.button 
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ scale: 1.015 }}
+                whileTap={{ scale: 0.985 }}
                 onClick={() => setModalType('COMPANY')}
-                className="bg-white border-2 border-[#2B4D89] text-[#2B4D89] text-xs sm:text-sm font-black px-8 py-4.5 rounded-xl hover:bg-slate-50 transition-all cursor-pointer flex items-center justify-center gap-2 flex-1"
+                className="bg-slate-50 border border-[#2B4D89]/15 text-[#2B4D89] text-[11px] min-[360px]:text-[12px] sm:text-sm font-black py-4 px-2 rounded-xl hover:bg-slate-100/80 transition-all cursor-pointer flex items-center justify-center text-center select-none"
               >
-                <ShattabhaLogo className="w-5 h-5 shrink-0" iconOnly={true} /> {isEn ? 'Register Company Partner' : 'سجل شركتك كمقاول معتمد'}
+                <span className="w-full text-center block truncate">{isEn ? 'Register Partner' : 'سجل كشركة معتمدة'}</span>
               </motion.button>
             </div>
 
-            {/* Interactive features benchmarks list */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-6 border-t border-gray-200/60 w-full text-right font-black text-gray-500 text-[10px] sm:text-xs">
-              <div className="flex items-center gap-1.5 justify-end">
-                <span>{isEn ? 'Verified Studios only' : 'شركات مسجلة تجارياً ورسمياً'}</span>
-                <CheckCircle className="w-4 h-4 text-[#D8B448] shrink-0" />
+            {/* Elegant Trust Badges like the original but perfectly formatted */}
+            <div 
+              className="grid grid-cols-2 gap-x-4 sm:gap-x-8 gap-y-3.5 pt-5 border-t border-gray-200/60 w-full"
+              dir={isEn ? 'ltr' : 'rtl'}
+            >
+              {/* Right Column (RTL) - Two sentences stacked under each other */}
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-1 sm:gap-1.5">
+                  <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#D8B448] shrink-0" />
+                  <span className="text-gray-700 leading-none text-[9.5px] min-[360px]:text-[10.5px] min-[400px]:text-[11.5px] sm:text-xs font-black whitespace-nowrap">
+                    {isEn ? 'Verified Studios only' : 'شركات مسجلة تجارياً ورسمياً'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 sm:gap-1.5">
+                  <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#D8B448] shrink-0" />
+                  <span className="text-gray-700 leading-none text-[9.5px] min-[360px]:text-[10.5px] min-[400px]:text-[11.5px] sm:text-xs font-black whitespace-nowrap">
+                    {isEn ? 'Certified Site Audit' : 'تقارير فحص وصور دورية'}
+                  </span>
+                </div>
               </div>
-              <div className="flex items-center gap-1.5 justify-end">
-                <span>{isEn ? 'Escrow Protection' : 'ربط الدفعات بالاستلام الهندسي'}</span>
-                <CheckCircle className="w-4 h-4 text-[#D8B448] shrink-0" />
-              </div>
-              <div className="flex items-center gap-1.5 justify-end col-span-2 md:col-span-1">
-                <span>{isEn ? 'Certified Site Audit' : 'تقارير فحص وصور دورية'}</span>
-                <CheckCircle className="w-4 h-4 text-[#D8B448] shrink-0" />
+
+              {/* Left Column (RTL) - Third sentence opposite them */}
+              <div className="flex flex-col gap-3 justify-start">
+                <div className="flex items-center gap-1 sm:gap-1.5">
+                  <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#D8B448] shrink-0" />
+                  <span className="text-gray-700 leading-none text-[9.5px] min-[360px]:text-[10.5px] min-[400px]:text-[11.5px] sm:text-xs font-black whitespace-nowrap">
+                    {isEn ? 'Escrow Protection' : 'ربط الدفعات بالاستلام الهندسي'}
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -992,7 +1008,7 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
                     referrerPolicy="no-referrer"
                   />
                   <div className="absolute inset-0 bg-[#2B4D89]/45 mix-blend-overlay" />
-                  <div className="absolute bottom-4 right-4 bg-red-950/85 backdrop-blur-md text-white text-[10px] sm:text-xs font-black px-4 py-2 rounded-xl border border-red-500/10">
+                  <div className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-red-950/85 backdrop-blur-md text-white text-[10px] sm:text-xs font-black px-3.5 py-1.5 rounded-xl border border-red-500/10">
                     {isEn ? 'Stage 1: Raw Concrete & Red Brick Unit 🧱' : 'مظهر الوحدة قبل التشطيب: على الطوب الأحمر الخرساني 🧱'}
                   </div>
                 </div>
@@ -1006,51 +1022,39 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
                     referrerPolicy="no-referrer"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none" />
-                  <div className="absolute bottom-4 right-4 bg-[#1E3254]/95 backdrop-blur-md text-white text-[10px] sm:text-xs font-black px-4 py-2.5 rounded-xl border border-white/10 max-w-[85%] text-right font-sans">
+                  <div className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-[#1E3254]/95 backdrop-blur-md text-white text-[10px] sm:text-xs font-black px-3.5 py-2 rounded-xl border border-white/10 max-w-[85%] text-right font-sans">
                     {isEn ? loadedSlides[slideIndex].labelEn : loadedSlides[slideIndex].labelAr}
                   </div>
                 </div>
 
-                {/* Verified certification seal bottom left */}
-                <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm px-3.5 py-2 rounded-2xl flex items-center gap-2 shadow-lg border border-slate-100 text-right">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                {/* Verified certification seal bottom left / right (opposite of absolute top overlay to prevent overlaps) */}
+                <div className={`absolute bottom-3 sm:bottom-4 ${isEn ? 'left-3 sm:left-4' : 'right-3 sm:right-4'} bg-white/95 backdrop-blur-sm px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl flex items-center gap-2 shadow-lg border border-slate-100 text-right`}>
+                  <span className="w-2 rounded-full bg-emerald-500 animate-pulse shrink-0 aspect-square" />
                   <div>
-                    <span className="text-[10px] font-black text-[#2B4D89] block leading-none">{isEn ? '300+ Verified Handovers' : '٣٠٠+ شقة تم معاينتها وتسليمها'}</span>
-                    <span className="text-[9px] text-[#D8B448] font-black block mt-0.5">✓ حاصل على درع الاستلام الهندسي</span>
+                    <span className="text-[9px] sm:text-[10px] font-black text-[#2B4D89] block leading-none">{isEn ? '300+ Verified Handovers' : '٣٠٠+ شقة تم معاينتها وتسليمها'}</span>
+                    <span className="text-[8px] sm:text-[9px] text-[#D8B448] font-black block mt-0.5">✓ حاصل على درع الاستلام الهندسي</span>
                   </div>
                 </div>
 
               </div>
 
               {/* Slider View Control Bar */}
-              <div className="flex flex-col sm:flex-row items-center justify-between text-xs font-bold gap-4 py-1.5" dir={isEn ? 'ltr' : 'rtl'}>
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3.5 border-t border-slate-100" dir={isEn ? 'ltr' : 'rtl'}>
                 
-                <div className="flex items-center gap-2 text-right">
-                  <span className="text-gray-400 font-extrabold">{isEn ? 'Interactive View Toggle:' : 'بصمة ومظهر الوحدة بعد التشطيب:'}</span>
-                  {showAfter && (
-                    <div className="flex items-center gap-1.5">
-                      <button 
-                        onClick={() => setSlideIndex(prev => (prev - 1 + loadedSlides.length) % loadedSlides.length)}
-                        className="w-6 h-6 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center font-black text-[10px] hover:bg-slate-200 transition-colors"
-                      >
-                        ◀
-                      </button>
-                      <button 
-                        onClick={() => setSlideIndex(prev => (prev + 1) % loadedSlides.length)}
-                        className="w-6 h-6 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center font-black text-[10px] hover:bg-slate-200 transition-colors"
-                      >
-                        ▶
-                      </button>
-                    </div>
-                  )}
+                <div className="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-right w-full sm:w-auto">
+                  <span className="text-gray-500 font-extrabold text-xs">
+                    {isEn 
+                      ? (showAfter ? 'Unit appearance: After finishing' : 'Unit appearance: Before finishing') 
+                      : (showAfter ? 'بصمة ومظهر الوحدة بعد التشطيب:' : 'بصمة ومظهر الوحدة قبل التشطيب:')}
+                  </span>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex gap-2.5 w-full sm:w-auto justify-center sm:justify-end">
                   <button 
                     onClick={() => setShowAfter(false)}
-                    className={`px-4 py-2 rounded-xl transition-all text-xs font-black cursor-pointer ${
+                    className={`px-4 py-2.5 rounded-xl transition-all text-xs font-black cursor-pointer flex-1 sm:flex-none text-center ${
                       !showAfter 
-                        ? 'bg-[#E54848] text-white shadow-md' 
+                        ? 'bg-[#E54848] text-white shadow-md shadow-[#E54848]/20' 
                         : 'bg-slate-50 text-slate-500 hover:bg-slate-100 border border-slate-200'
                     }`}
                   >
@@ -1058,9 +1062,9 @@ export const PublicHomeView: React.FC<PublicHomeViewProps> = ({
                   </button>
                   <button 
                     onClick={() => setShowAfter(true)}
-                    className={`px-4 py-2 rounded-xl transition-all text-xs font-black cursor-pointer ${
+                    className={`px-4 py-2.5 rounded-xl transition-all text-xs font-black cursor-pointer flex-1 sm:flex-none text-center ${
                       showAfter 
-                        ? 'bg-emerald-600 text-white shadow-md' 
+                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20' 
                         : 'bg-slate-50 text-slate-500 hover:bg-slate-100 border border-slate-200'
                     }`}
                   >
